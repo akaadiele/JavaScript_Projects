@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Title on browser tab -->
+    <title>Beast Battle</title>
+
+    <!-- Link to CSS file -->
+    <link rel="stylesheet" href="beast_battle.css">
+</head>
+
+<body>
+    <!-- Game container -->
+    <div id="game">
+        <!-- Stats container -->
+        <div id="stats">
+            <span class="stat">XP: <strong id="xpText">0</strong></span>
+            <span class="stat">Health: <strong id="healthText">100</strong></span>
+            <span class="stat">Gold: <strong id="goldText">50</strong></span>
+            <span class="stat" id="weapons-list">Weapon(s): <strong id="weaponText"></strong></span>
+        </div>
+
+        <!-- Controls container -->
+        <div id="controls">
+            <button id="button1">Go to Store</button>
+            <button id="button2">Go to Cave</button>
+            <button id="button3">Fight The dragon</button>
+        </div>
+
+        <!-- Monster Stats container -->
+        <div id="monstersStats">
+            <span class="stat">Monster: <strong><span id="monsterName"></span></strong></span>
+            <span class="stat">Health: <strong><span id="monsterHealth"></span></strong></span>
+        </div>
+
+        <!-- Display Text container -->
+        <div id="text">
+            Welcome to Beast Battle. You must defeat the beasts that are threatening the village.
+            <br><br>You are in the town square. Where do you want to go? 
+            <br><em><small>--- (Use the buttons above.) ---</small></em>
+        </div>
+    </div>
+
+    <!-- Link to JavaScript file -->
+    <script src="beast_battle.js"></script>
+</body>
+
+</html>
