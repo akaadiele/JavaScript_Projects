@@ -1,13 +1,16 @@
 // --------------------------------------------------------------------------------------------------------------------
+// Initial checks
+import dotenv from "dotenv";  // Importing the dotenv package to load environment variables
+dotenv.config();  // Loading environment variables
+
+// --------------------------------------------------------------------------------------------------------------------
 // Imports
 import mongodb from "mongodb";  // Importing the MongoDB driver to interact with a MongoDB database.
 import app from "./server.js";  // Importing the Express application instance from the server.js file
 import ReviewsDAO from "./dao/reviewsDAO.js";  // Importing the Reviews Data Access Object (DAO) module
-import dotenv from "dotenv";  // Importing the dotenv package to load environment variables
 
 // --------------------------------------------------------------------------------------------------------------------
 // MongoDB Connection
-dotenv.config();  // Loading environment variables
 const mongoDb_U = process.env.MONGODB_U;
 const mongoDb_P = process.env.MONGODB_P;
 const mongoDbPort = process.env.PORT;
