@@ -10,7 +10,7 @@ import dotenv from "dotenv";  // Importing the dotenv package to load environmen
 dotenv.config();  // Loading environment variables
 const mongoDb_U = process.env.MONGODB_U;
 const mongoDb_P = process.env.MONGODB_P;
-const mongoDbPort = process.env.MONGODB_PORT;
+const mongoDbPort = process.env.PORT;
 const mongoUri = `mongodb+srv://${mongoDb_U}:${mongoDb_P}@cluster0.bfqdijr.mongodb.net/?appName=Cluster0`;  // MongoDB connection URI
 const MongoClient = mongodb.MongoClient;    // Creating a MongoClient instance to connect to the MongoDB database.
 
