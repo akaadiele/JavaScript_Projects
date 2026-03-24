@@ -1,0 +1,106 @@
+
+
+body {
+    background-color: #7C7C7C;
+    /* background-color: #eee5e9; */
+}
+
+.movie-card {
+    background-color: #eee5e9;
+    /* background-color: #7C7C7C; */
+}
+
+/* * {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #131720;
+    font-family: sans-serif;
+    color: white;
+}
+
+p.movie-year {
+    color: white;
+    font-style: italic;
+    font-size: smaller;
+}
+
+a.movie-link {
+    color: #1e90ff;
+    text-decoration: none;
+}
+
+.nav-bar {
+    overflow: hidden;
+    padding: 10px;
+}
+
+.nav-bar a {
+    float: left;
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+}
+
+.nav-bar .search-container {
+    float: right;
+}
+
+form {
+    background-color: #151f30;
+    width: 300px;
+    height: 45px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+}
+
+input {
+    all: unset;
+    font: 15px system-ui;
+    color: white;
+    height: 100%;
+    width: 100%;
+    padding: 6px 10px;
+}
+
+.img-thumbnail {
+    height: 350px;
+    width: 300px;
+    border-radius: 10px;
+}
+
+.column {
+    float: left;
+    width: 25%;
+    padding: 10px;
+}
+
+.card {
+    border-radius: 20px;
+    padding: 15px;
+    text-align: center;
+    background-color: #151f30;
+}
+
+
+.edit-input {
+    font: 15px system-ui;
+    color: black;
+    height: 100%;
+    width: 80%;
+    padding: 10px;
+
+    background-color: #b8b7ae;
+    border-radius: 5px;
+}
+
+i {
+    color: #fff;
+    cursor: pointer;
+} */
