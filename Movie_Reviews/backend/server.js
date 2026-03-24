@@ -20,10 +20,10 @@ app.use("/api/v1/reviews", reviews);  // Mounting the reviews route at the speci
 // "/api/v1/reviews" => reviews route module ('./api/reviews.route.js').
 
 // Backup Route
-app.use(/./, (req, res) => {  
+app.use(/./, (request, response) => {  
     // A catch-all route that matches any request that doesn't match the defined route above.
     // Custom error handling
-    res.status(404).json({ error: "Not Found" });
+    response.status(404).json({ error: "Not Found" });
 });
 
 // --------------------------------------------------------------------------------------------------------------------

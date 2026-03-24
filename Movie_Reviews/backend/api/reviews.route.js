@@ -10,10 +10,9 @@ const router = express.Router();  // Creating a new router instance from Express
 // --------------------------------------------------------------------------------------------------------------------
 // Routes for the reviews API
 // Base route: /api/v1/reviews
-router.route("/").get((req, res) => {
+router.route("/").get((request, response) => {
     // Defining a GET route for the root path of the reviews API (e.g., /api/v1/reviews/).
-    console.log("request:", req);  // Logging the incoming request object to the console for debugging purposes.
-    res.json({
+    response.json({
         message: "Hello, Thank you for using my Movie Reviews API!",
         help: [
             {
