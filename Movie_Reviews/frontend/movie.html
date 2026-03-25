@@ -4,10 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Movie Site</title>
+    <title>Movie & Reviews</title>
 
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="style.css">
+    <!-- Icon -->
+    <link rel="icon" href="./img/logo.ico">
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -15,42 +15,116 @@
 
     <!-- Font Awesome CSS-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Orbitron:wght@400..900&family=Roboto+Slab:wght@100..900&family=Smooch+Sans:wght@100..900&display=swap"
+        rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <!-- Navigation Bar -->
-    <nav class="nav-bar">
-        <a href="index.html" class="active">Movies</a>
+    <nav class="navbar bg-dark border-bottom border-body" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand active nav-title" href="index.html">Movies & Reviews</a>
+        </div>
     </nav>
 
-    <!-- Movie Title -->
-    <h1>Reviews for:</h1>
-    <h3 id="title">Movie Title</h3>
 
     <!-- Movie Section -->
-    <section id="movie-section">
-        <!-- Movie item will be dynamically added here -->
+    <div class="container-fluid my-3 mx-auto">
+        <div class="d-flex justify-content-around row" id="movie-section">
 
-        <div class="card mb-3" style="max-width: 540px;">
-            <div class="row g-0">
-                <div class="col-md-4">
-                    <img src="https://cinesite.com/wp-content/uploads/2025/10/crime_one_o_one.jpg" class="img-fluid rounded-start" alt="...">
-                </div>
-                <div class="col-md-8">
-                    <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                            additional content. This content is a little bit longer.</p>
-                        <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+            <!-- Movie Info -->
+            <div class="card mb-3 bg-1" style="max-width: 50rem;">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        <img src="..." id="moviePoster" class="img-fluid rounded-start" alt="Movie Poster">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h3 class="card-title" id="movieTitle">
+                                <!-- Movie title will be inserted here -->
+                                Movie Title
+                            </h3>
+                            <hr>
+                            <p class="card-text" id="movieOverview">
+                                <!-- Overview will be inserted here -->
+                                Movie overview
+                            </p>
+                            <p class="card-text">
+                                <small class="text-body-secondary" id="movieReleaseYear">
+                                    <!-- Year will be inserted here -->
+                                    Year of release
+                                </small>
+                            </p>
+
+                            <hr>
+                            <p>
+                                <a href="#"
+                                    class="link-primary link-offset-3 link-underline-opacity-50 link-underline-opacity-100-hover"
+                                    id="imdbLink" target="_blank">More Info (IMDb)</a>
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
+
+
+            <!-- Add a Review -->
+            <div class="card text-center mb-3 bg-1" style="width: 20rem;">
+                <div class="card-body">
+                    <h5 class="card-title">Add Review:</h5>
+
+                    <hr>
+                    <div class="form-floating mb-3">
+                        <textarea class="form-control" placeholder="Leave a comment here" id="newReviewInput"
+                            style="height: 150px;"></textarea>
+                        <label for="newReviewInput"><em>Review:</em> </label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="newUserInput">
+                        <label for="newUserInput"><em>Name:</em></label>
+                    </div>
+
+                    <a href="#" class="btn btn-primary" onclick="saveReview('newReviewInput', 'newUserInput')"> <i
+                            class="fa-regular fa-floppy-disk"> </i> Save</a>
+                </div>
+            </div>
+
         </div>
+    </div>
 
-    </section>
+
+    <hr class="border border-light border-3 opacity-50">
+
+    
+    <!-- Reviews Section -->
+    <div class="bg-dark my-3 mx-auto py-3">
+        <h1 class="text-light text-center py-2 h1">Reviews</h1>
+
+        <div class="container d-flex justify-content-center">
+            <div class="row g-2" id="reviews-section">
+                <!-- Movie reviews will be dynamically added here -->
+            </div>
+        </div>
+    </div>
 
 
-    <!-- <script src="movie.js"></script> -->
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+
+    <!-- Custom JavaScript -->
+    <script src="movie.js"></script>
 </body>
 
 </html>

@@ -1,136 +1,133 @@
-
-
-const apiLink = `http://127.0.0.1:8000/api/v1/reviews/`;
+// --------------------------------------------------------------------------------------------------------------------
+// Declarations
+const reviewsApiLink = `https://movie-review-api-o8bs.onrender.com/api/v1/reviews/`;
 
 const url = new URL(window.location.href);  // Creating a new URL object using the current window's URL, allowing us to easily access query parameters.
-// ?id=1265609&title=War%20Machine
 const movieId = url.searchParams.get("id");  // Extracting the "id" query parameter from the URL, which represents the movie ID for which we want to fetch reviews.
 
-const movieSection = document.querySelector("#movie-section");
-const titleElement = document.querySelector("#title");
-
-
-// Update the title element with the movie title from the URL query parameter
-
+const reviewsSection = document.querySelector("#reviews-section");
+const movieTitle = document.querySelector("#movieTitle");
+const movieOverview = document.querySelector("#movieOverview");
+const movieReleaseYear = document.querySelector("#movieReleaseYear");
+const moviePoster = document.querySelector("#moviePoster");
+const imdbLinkElement = document.querySelector("#imdbLink");
 
 
 // ----------------------------------------------------------------------------------------------------
 // Movie Info
 const apiKey = "3337908d4e0727354bbcd62232421223";
-function fetchMovieInfo(movieId) {
-    const url = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${apiKey}`;
+
+// Retrieving and displaying movie information
+function fetchMovieInfo(currentMovieId) {
+    const url = `https://api.themoviedb.org/3/movie/${currentMovieId}?api_key=${apiKey}`;
     fetch(url)
         .then(response => response.json())
         .then(function (data) {
-                console.log("Fetched movie info:", data);
-                
-                const imdbLink = `https://www.imdb.com/title/${data.imdb_id}/`;
-                const title = data.title;
-                const releaseYear = data.release_date.split("-")[0]
-                const overview = data.overview;
+            const title = data.title;
+            const overview = data.overview;
+            const releaseYear = data.release_date.split("-")[0]
+            const imgPath = data.poster_path ? "https://image.tmdb.org/t/p/w500" + data.poster_path : "https://image.tmdb.org/t/p/w500" + data.backdrop_path;
 
-                titleElement.innerText = title;
-                
-            });
+            movieTitle.innerText = title;
+            movieOverview.innerText = overview;
+            movieReleaseYear.innerText = `Released: ${releaseYear}`;
+            moviePoster.src = imgPath;
+            moviePoster.alt = title;
+
+            if (!data.imdb_id || data.imdb_id == null || data.imdb_id == "") {
+                imdbLinkElement.innerHTML = "";
+            } else {
+                const imdbLink = `https://www.imdb.com/title/${data.imdb_id}/`;
+                imdbLinkElement.href = imdbLink;
+            }
+        });
 }
 
 fetchMovieInfo(movieId);
 
 
-// ----------------------------------------------------------------------------------------------------
-// Reviews
+// --------------------------------------------------------------------------------------------------------------------
+// Functions
 
-// New review
-const divNewReview = document.createElement("div");
-divNewReview.innerHTML = `<div class="row">
-                    <div class="column">
-                        <div class="card">
-                            <h3>New Review:</h3>
-                            <hr>
-                            
-                            <p><strong>Review:</strong> </p>
-                            <textarea rows="3" cols="45" id="newReviewInput" class="edit-input"></textarea>
-                            
-                            <br><br>
-                            <p><strong>User:</strong></p>
-                            <input type="text" id="newUserInput" class="edit-input">
-
-                            <br>
-                            <p>
-                            <a href="#" class="edit-link" onclick="saveReview('newReviewInput', 'newUserInput')"><i class="fa-regular fa-floppy-disk"></i></a>
-                            </p>
-                        </div>
-                    </div>
-                </div>`;
-movieSection.appendChild(divNewReview);
-
-// // Initial fetch of popular movies
-fetchReviews(`${apiLink}movie/${movieId}`);
-
+// Fetching and displaying reviews for the movie
 function fetchReviews(url) {
     fetch(url)
         .then(response => response.json())
         .then(function (data) {
-            // console.log("Fetched reviews:", data);
-
             data.forEach(review => {
                 const divReview = document.createElement("div");
+                divReview.classList.add("col", "mb-3");
 
-                divReview.innerHTML = `<div class="row">
-                    <div class="column">
-                        <div class="card" id="${review._id}">
-                            <p><strong>Review:</strong> ${review.review}</p>
-                            <p><strong>User:</strong> ${review.user}</p>
-                            
-                            <br>
+                divReview.innerHTML = `
+                    <div class="card text-bg-light mb-3" id="${review._id}" style="width: 18rem; max-width: 20rem;">
+                        <div class="card-header"><em>Review</em></div>
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                ${review.user}
+                            </h5>
+                            <p class="card-text font-monospace">
+                                ${review.review}
+                            </p>
+
                             <p>
-                            <a href="#" class="edit-link" onclick="editReview('${review._id}', '${review.review}', '${review.user}')"><i class="fa-solid fa-pencil"></i></a> | 
-                            <a href="#" class="delete-link" onclick="deleteReview('${review._id}')"><i class="fa-solid fa-trash"></i></a>
+                                <a href="#" class="btn btn-sm btn-info" onclick="editReview('${review._id}', '${review.review}', '${review.user}')" hidden>
+                                    <i class="fa-solid fa-pencil"></i> Edit
+                                </a>
+                                <a href="#" class="btn btn-sm btn-secondary" onclick="deleteReview('${review._id}')" hidden>
+                                    <i class="fa-solid fa-trash-can"></i> Delete
+                                </a>
                             </p>
                         </div>
                     </div>
-                </div>`;
+                `;
 
-                movieSection.appendChild(divReview);
+                reviewsSection.appendChild(divReview);
             });
         });
 }
 
+fetchReviews(`${reviewsApiLink}movie/${movieId}`);
 
+
+// Editing a review
 function editReview(reviewId, reviewText, reviewUser) {
-    console.log(reviewText);
-
     const element = document.getElementById(reviewId);
-    console.log(element);
-
     const reviewInputId = "review" + reviewId;
     const userInputId = "user" + reviewId;
 
-    // <input type="text" id="${reviewInputId}" value="${reviewText}" class="edit-input">
-
     element.innerHTML = `
-    <p><strong>Review:</strong></p>
-    
-    <textarea rows="3" cols="45" id="${reviewInputId}" class="edit-input">${reviewText}</textarea>
-    
-    <p><strong>User:</strong> </p>
-    <input type="text" id="${userInputId}" value="${reviewUser}" class="edit-input">
-    
-    <br>
-    <p>
-        <a href="#" class="save-link" onclick="saveReview('${reviewInputId}', '${userInputId}', '${reviewId}')"><i class="fa-regular fa-floppy-disk"></i></a> | 
-        <a href="#" class="cancel-link" onclick="cancelEdit()"><i class="fa-solid fa-x"></i></a>
-    </p>
-    `;
+        <div class="card-header"><em>Edit Review:</em></div>
+        <div class="card-body">
+            <div class="form-floating mb-3">
+                <textarea class="form-control" placeholder="Leave a comment here" id="${reviewInputId}" style="height: 100px;">${reviewText}</textarea>
+                <label for="newReviewInput"><em>Review:</em> </label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="${userInputId}" value="${reviewUser}">
+                <label for="newUserInput"><em>Name:</em></label>
+            </div>
+
+            
+            <a href="#" class="btn btn-success" onclick="saveReview('${reviewInputId}', '${userInputId}', '${reviewId}')">
+                <i class="fa-regular fa-floppy-disk"> </i> Update
+            </a>
+
+            <a href="#" class="btn btn-secondary" onclick="cancelEdit()">
+                <i class="fa-solid fa-x"></i> Cancel
+            </a>
+        </div>`;
 }
 
+
+// Saving a new review or updating an existing review
 function saveReview(reviewInputId, userInputId, reviewId = null) {
     const updatedReview = document.getElementById(reviewInputId).value;
     const updatedUser = document.getElementById(userInputId).value;
 
     if (reviewId) {
         // Updating an existing review
-        fetch(`${apiLink}${reviewId}`, {
+        fetch(`${reviewsApiLink}${reviewId}`, {
             method: "PUT",
             headers: {
                 'Accept': 'application/json, text/plain, */*',
@@ -145,12 +142,11 @@ function saveReview(reviewInputId, userInputId, reviewId = null) {
         })
             .then(response => response.json())
             .then(res => {
-                console.log("response:", res);
                 location.reload();  // Reloading the page to reflect the updated review after a successful update operation.
             });
     } else {
         // Creating a new review
-        fetch(`${apiLink}new`, {
+        fetch(`${reviewsApiLink}new`, {
             method: "POST",
             headers: {
                 'Accept': 'application/json, text/plain, */*',
@@ -164,31 +160,28 @@ function saveReview(reviewInputId, userInputId, reviewId = null) {
         })
             .then(response => response.json())
             .then(res => {
-                console.log("response:", res);
                 location.reload();
             });
     }
 }
 
-function cancelEdit() {
-    location.reload();  // Reloading the page to cancel the edit operation and revert back to the original review display.
-}
 
+// Deleting a review
 function deleteReview(reviewId) {
-    fetch(`${apiLink}${reviewId}`, {
+    fetch(`${reviewsApiLink}${reviewId}`, {
         method: "DELETE"
     })
         .then(response => response.json())
         .then(res => {
-            console.log("response:", res);
             location.reload();
         });
 }
 
 
+// Canceling the edit operation
+function cancelEdit() {
+    location.reload();  // Reloading the page to cancel the edit operation and revert back to the original review display.
+}
 
-// const movieApiLink = `https://api.themoviedb.org/3/movie/1290821?api_key=${apiKey}`;
-// const imdbLink = `https://www.imdb.com/title/${element.imdb_id}/`;
-// element.overview
 
-
+// --------------------------------------------------------------------------------------------------------------------
