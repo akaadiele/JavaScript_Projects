@@ -1,9 +1,11 @@
 // --------------------------------------------------------------------------------------------------------------------
 // Declarations
-const apiKey = "3337908d4e0727354bbcd62232421223";
-const reviewsApiLink = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=${apiKey}&page=1`;  // Constructing the API URL for fetching popular movies from TMDB, including the API key and sorting by popularity.
+const tmdbApiLink = `https://movie-review-api-o8bs.onrender.com/api/v1/tmdb`;  // Base URL for the backend API (deployed)
+// const tmdbApiLink = `http://localhost:8000/api/v1/tmdb`;  // Base URL for the backend API (local)
+
+const discoverApi = `${tmdbApiLink}/discover`;  // Constructing the API URL for fetching popular movies from TMDB, including the API key and sorting by popularity.
 const imgPath = 'https://image.tmdb.org/t/p/w1280';
-const searchApi = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=`;  // Constructing the API URL for searching movies on TMDB, including the API key and a placeholder for the search query.
+const searchApi = `${tmdbApiLink}/search/`;  // Constructing the API URL for searching movies on TMDB, including the API key and a placeholder for the search query.
 
 const movieSection = document.querySelector("#movie-section");
 const searchForm = document.querySelector("#search-form");
@@ -52,7 +54,7 @@ searchForm.addEventListener("submit", (evt) => {
 
 // --------------------------------------------------------------------------------------------------------------------
 // Initial fetch of popular movies
-fetchMovies(reviewsApiLink);
+fetchMovies(discoverApi);
 
 
 // --------------------------------------------------------------------------------------------------------------------

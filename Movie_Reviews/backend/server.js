@@ -3,6 +3,7 @@
 import express from "express";  // Importing the Express.js framework
 import cors from "cors";  // Importing the CORS middleware
 import reviews from "./api/reviews.route.js";  // Importing the reviews route module
+import tmdb from "./api/tmdb.route.js";  // Importing the TMDB route module
 
 // --------------------------------------------------------------------------------------------------------------------
 // Create Express App
@@ -18,6 +19,11 @@ app.use(express.json());  // Middleware to accept and handle incoming JSON reque
 // Reviews Route
 app.use("/api/v1/reviews", reviews);  // Mounting the reviews route at the specified path. 
 // "/api/v1/reviews" => reviews route module ('./api/reviews.route.js').
+
+// TMDB Route
+app.use("/api/v1/tmdb", tmdb);  // Mounting the TMDB route at the specified path. 
+// "/api/v1/tmdb" => tmdb route module ('./api/tmdb.route.js').
+
 
 // Backup Route
 app.use(/./, (request, response) => {  

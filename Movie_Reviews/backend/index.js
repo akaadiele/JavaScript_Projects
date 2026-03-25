@@ -8,12 +8,14 @@ dotenv.config();  // Loading environment variables
 import mongodb from "mongodb";  // Importing the MongoDB driver to interact with a MongoDB database.
 import app from "./server.js";  // Importing the Express application instance from the server.js file
 import ReviewsDAO from "./dao/reviewsDAO.js";  // Importing the Reviews Data Access Object (DAO) module
+import tmdbDAO from "./dao/tmdbDAO.js"; // Importing the TMDB Data Access Object (DAO) module
+
 
 // --------------------------------------------------------------------------------------------------------------------
 // MongoDB Connection
+const serverPort = process.env.PORT;
 const mongoDb_U = process.env.MONGODB_U;
 const mongoDb_P = process.env.MONGODB_P;
-const mongoDbPort = process.env.PORT;
 const mongoUri = `mongodb+srv://${mongoDb_U}:${mongoDb_P}@cluster0.bfqdijr.mongodb.net/?appName=Cluster0`;  // MongoDB connection URI
 const MongoClient = mongodb.MongoClient;    // Creating a MongoClient instance to connect to the MongoDB database.
 
@@ -33,8 +35,8 @@ MongoClient.connect(  // Connecting to the MongoDB database using the connection
         await ReviewsDAO.injectDB(client);  // Injecting the MongoDB client into the ReviewsDAO, allowing it to interact with the database.
 
         // Starting the Express server and listening on the specified port.
-        app.listen(mongoDbPort, () => {
-            console.log(`Server is running on port ${mongoDbPort}`);  // Logging a message to the console indicating that the server is running and on which port.
+        app.listen(serverPort, () => {
+            console.log(`Server is running on port ${serverPort}`);  // Logging a message to the console indicating that the server is running and on which port.
         });
     });
 

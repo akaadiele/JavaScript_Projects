@@ -5,12 +5,12 @@ import ReviewsController from "./reviews.controller.js";  // Importing the Revie
 
 // --------------------------------------------------------------------------------------------------------------------
 // Router
-const router = express.Router();  // Creating a new router instance from Express to define routes for the reviews API.
+const reviewsRouter = express.Router();  // Creating a new router instance from Express to define routes for the reviews API.
 
 // --------------------------------------------------------------------------------------------------------------------
 // Routes for the reviews API
 // Base route: /api/v1/reviews
-router.route("/").get((request, response) => {
+reviewsRouter.route("/").get((request, response) => {
     // Defining a GET route for the root path of the reviews API (e.g., /api/v1/reviews/).
     response.json({
         message: "Hello, Thank you for using my Movie Reviews API!",
@@ -49,15 +49,15 @@ router.route("/").get((request, response) => {
 // Routes for handling specific review-related operations, 
 
 // 'GET' route for fetching reviews of a specific movie by its movie ID 
-router.route("/movie/:id").get(ReviewsController.apiGetReviews);
+reviewsRouter.route("/movie/:id").get(ReviewsController.apiGetReviews);
 // (e.g., /api/v1/reviews/movie/123).
 
 // 'POST' route for creating a new review 
-router.route("/new").post(ReviewsController.apiPostReview);
+reviewsRouter.route("/new").post(ReviewsController.apiPostReview);
 // (e.g., /api/v1/reviews/new).
 
 // 'GET', 'PUT', and 'DELETE' routes for handling operations on a specific review by its review ID
-router.route("/:id")
+reviewsRouter.route("/:id")
     .get(ReviewsController.apiGetReview)
     .put(ReviewsController.apiUpdateReview)
     .delete(ReviewsController.apiDeleteReview);
@@ -65,7 +65,7 @@ router.route("/:id")
 
 // --------------------------------------------------------------------------------------------------------------------
 // Exports
-export default router;  // Exporting the router instance
+export default reviewsRouter;  // Exporting the reviewsRouter instance
 
 
 // --------------------------------------------------------------------------------------------------------------------

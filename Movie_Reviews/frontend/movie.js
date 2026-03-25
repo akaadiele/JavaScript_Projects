@@ -1,6 +1,9 @@
 // --------------------------------------------------------------------------------------------------------------------
 // Declarations
-const reviewsApiLink = `https://movie-review-api-o8bs.onrender.com/api/v1/reviews/`;
+const apiBaseURL = `https://movie-review-api-o8bs.onrender.com/api/v1`;  // Base URL for the backend API (deployed)
+// const apiBaseURL = `http://localhost:8000/api/v1`;  // Base URL for the backend API (local)
+const reviewsApiLink = `${apiBaseURL}/reviews/`;
+const tmdbMovieApiLink = `${apiBaseURL}/tmdb/movie/`;
 
 const url = new URL(window.location.href);  // Creating a new URL object using the current window's URL, allowing us to easily access query parameters.
 const movieId = url.searchParams.get("id");  // Extracting the "id" query parameter from the URL, which represents the movie ID for which we want to fetch reviews.
@@ -15,11 +18,10 @@ const imdbLinkElement = document.querySelector("#imdbLink");
 
 // ----------------------------------------------------------------------------------------------------
 // Movie Info
-const apiKey = "3337908d4e0727354bbcd62232421223";
 
 // Retrieving and displaying movie information
 function fetchMovieInfo(currentMovieId) {
-    const url = `https://api.themoviedb.org/3/movie/${currentMovieId}?api_key=${apiKey}`;
+    const url = `${tmdbMovieApiLink}${currentMovieId}`;
     fetch(url)
         .then(response => response.json())
         .then(function (data) {
