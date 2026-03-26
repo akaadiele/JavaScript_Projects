@@ -37,14 +37,14 @@
 
 
     <!-- Movie Section -->
-    <div class="container-fluid my-3 mx-auto">
+    <div class="container-fluid my-3 mx-auto px-3">
         <div class="d-flex justify-content-around row" id="movie-section">
 
             <!-- Movie Info -->
             <div class="card mb-3 bg-1" style="max-width: 50rem;">
                 <div class="row g-0">
                     <div class="col-md-4">
-                        <img src="..." id="moviePoster" class="img-fluid rounded-start" alt="Movie Poster">
+                        <img src="" id="moviePoster" class="img-fluid rounded-start" alt="Movie Poster">
                     </div>
                     <div class="col-md-8">
                         <div class="card-body">
@@ -68,7 +68,7 @@
                             <p>
                                 <a href="#"
                                     class="link-primary link-offset-3 link-underline-opacity-50 link-underline-opacity-100-hover"
-                                    id="imdbLink" target="_blank">More Info (IMDb)</a>
+                                    id="imdbLink" target="_blank">Full Movie Details (IMDb)</a>
                             </p>
                         </div>
                     </div>
@@ -79,9 +79,17 @@
             <!-- Add a Review -->
             <div class="card text-center mb-3 bg-1" style="width: 20rem;">
                 <div class="card-body">
-                    <h5 class="card-title">Add Review:</h5>
+                    <h5 class="card-title">Submit a review:</h5>
 
                     <hr>
+
+                    <div class="form-control mb-3">
+                        <label for="newRatingInput">Rating: <small class="fst-italic">(click star to rate)</small></label>
+                        <div id="newRatingInput" >
+                            <!-- Movie Rating Stars -->
+                        </div>
+                    </div>
+
                     <div class="form-floating mb-3">
                         <textarea class="form-control" placeholder="Leave a comment here" id="newReviewInput"
                             style="height: 150px;"></textarea>
@@ -104,13 +112,13 @@
 
     <hr class="border border-light border-3 opacity-50">
 
-    
+
     <!-- Reviews Section -->
     <div class="bg-dark my-3 mx-auto py-3">
         <h1 class="text-light text-center py-2 h1">Reviews</h1>
 
         <div class="container d-flex justify-content-center">
-            <div class="row g-2" id="reviews-section">
+            <div class="row g-4 d-flex justify-content-around" id="reviews-section">
                 <!-- Movie reviews will be dynamically added here -->
             </div>
         </div>
@@ -125,6 +133,8 @@
 
     <!-- Custom JavaScript -->
     <script src="movie.js"></script>
+        <!-- <script src="rating.js"></script> -->
+
 </body>
 
 </html>

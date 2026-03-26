@@ -13,9 +13,10 @@ export default class ReviewsController {
             const movieId = parseInt(request.body.movieId);  // Retrieving the movie ID from the request body, and converting it to an integer.
             const review = request.body.review;  // Retrieving the review text from the request body.
             const user = request.body.user;  // Retrieving the user information from the request body.
+            const rating = request.body.rating;  // Retrieving the rating from the request body.
 
             // Calling the addReview method from the ReviewsDAO to add a new review to the database.
-            const reviewResponse = await ReviewsDAO.addReview(movieId, review, user);
+            const reviewResponse = await ReviewsDAO.addReview(movieId, review, user, rating);
 
             // Success response
             response.json({ status: "success" });
@@ -52,9 +53,10 @@ export default class ReviewsController {
             const reviewId = request.params.id;  // Retrieving the review ID from the request parameters.
             const review = request.body.review;  // Retrieving the updated review text from the request body.
             const user = request.body.user;  // Retrieving the user information from the request body.
+            const rating = request.body.rating;  // Retrieving the updated rating from the request body.
 
             // Calling the updateReview method from the ReviewsDAO to update the specified review in the database.
-            const reviewResponse = await ReviewsDAO.updateReview( reviewId, user, review );
+            const reviewResponse = await ReviewsDAO.updateReview(reviewId, user, review, rating);
 
             var { error } = reviewResponse;  // Destructuring the error property from the review response.
             if (error) {  // Checking if there was an error in the review response.

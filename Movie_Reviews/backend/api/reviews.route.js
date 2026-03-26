@@ -18,27 +18,32 @@ reviewsRouter.route("/").get((request, response) => {
             {
                 endpoint: "/api/v1/reviews/movie/{id}",
                 method: "GET",
-                description: "Fetch reviews for a specific movie by its movie ID."
+                description: "Fetch reviews for a specific movie by its movie ID.",
+                body: "" 
             },
             {
                 endpoint: "/api/v1/reviews/new",
                 method: "POST",
-                description: "Create a new review for a specific movie."
+                description: "Create a new review for a specific movie.",
+                body: "{ movieId: Number, review: String, user: String, rating: Number }"
             },
             {
                 endpoint: "/api/v1/reviews/{id}",
                 method: "GET",
-                description: "Fetch a specific review by its review ID."
+                description: "Fetch a specific review by its review ID.",
+                body: ""
             },
             {
                 endpoint: "/api/v1/reviews/{id}",
                 method: "PUT",
-                description: "Update a specific review by its review ID."
+                description: "Update a specific review by its review ID.",
+                body: "{ review: String, user: String, rating: Number }"
             },
             {
                 endpoint: "/api/v1/reviews/{id}",
                 method: "DELETE",
-                description: "Delete a specific review by its review ID."
+                description: "Delete a specific review by its review ID.",
+                body: ""
             }
         ]
     });  // JSON object in response.

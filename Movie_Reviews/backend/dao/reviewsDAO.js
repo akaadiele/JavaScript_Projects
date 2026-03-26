@@ -29,13 +29,14 @@ export default class ReviewsDAO {
     }
 
     // Method to handle POST requests for creating a new review.
-    static async addReview(movieId, review, user) {
+    static async addReview(movieId, review, user, rating=10) {
         try {
             // Creating a review document object to be inserted into the reviews collection
             const reviewDoc = {
                 movieId: parseInt(movieId),  // Storing the movie ID as a number to match existing query behavior.
                 user: user,     // Storing the user information in the database.
                 review: review,     // Storing the review text in the database.
+                rating: rating,   // Storing the rating in the database.
                 date: new Date()  // Storing the current date and time when the review is created.
             };
 
@@ -63,7 +64,7 @@ export default class ReviewsDAO {
     }
 
     // Method to update a specific review by its ID.
-    static async updateReview(reviewId, user, review) {
+    static async updateReview(reviewId, user, review, rating) {
         try {
             // Updating a specific review in the reviews collection by its ID
             const updateResponse = await reviews.updateOne(
@@ -75,6 +76,7 @@ export default class ReviewsDAO {
                     $set: {  // Using the $set operator to specify the fields to update in the review document.
                         user: user,    // Updating the user information in the review document.
                         review: review,   // Updating the review text in the review document.
+                        rating: rating,   // Updating the rating in the review document.
                         date: new Date()    // Updating the date to the current date and time when the review is updated.
                     }
                 }

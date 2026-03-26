@@ -2,6 +2,7 @@
 // Declarations
 const apiBaseURL = `https://movie-review-api-o8bs.onrender.com/api/v1`;  // Base URL for the backend API (deployed)
 // const apiBaseURL = `http://localhost:8000/api/v1`;  // Base URL for the backend API (local)
+
 const reviewsApiLink = `${apiBaseURL}/reviews/`;
 const tmdbMovieApiLink = `${apiBaseURL}/tmdb/movie/`;
 
@@ -15,6 +16,15 @@ const movieReleaseYear = document.querySelector("#movieReleaseYear");
 const moviePoster = document.querySelector("#moviePoster");
 const imdbLinkElement = document.querySelector("#imdbLink");
 
+let selectedRating = 10;    // Selected rating for new reviews initialized to 10
+
+// --------------------------------------------------------------------------------------------------------------------
+// Setting body background color to match the theme of the website
+document.querySelector("body").style.backgroundColor = "#7C7C7C";
+
+// --------------------------------------------------------------------------------------------------------------------
+// Setting up the rating stars in the review form for new reviews
+setupReviewFormRatingStars("newRatingInput");
 
 // ----------------------------------------------------------------------------------------------------
 // Movie Info
@@ -28,7 +38,17 @@ function fetchMovieInfo(currentMovieId) {
             const title = data.title;
             const overview = data.overview;
             const releaseYear = data.release_date.split("-")[0]
-            const imgPath = data.poster_path ? "https://image.tmdb.org/t/p/w500" + data.poster_path : "https://image.tmdb.org/t/p/w500" + data.backdrop_path;
+
+            let imgPath = "";
+            let imgBasePath = "https://image.tmdb.org/t/p/w1280";
+
+            if (data.poster_path) {
+                imgPath = imgBasePath + data.poster_path; // Using the poster image if available
+            } else if (data.backdrop_path) {
+                imgPath = imgBasePath + data.backdrop_path;   // Using the backdrop image if the poster is not available
+            } else {
+                imgPath = "./img/default_movie.jpg";  // Default image if no poster or backdrop is available
+            }
 
             movieTitle.innerText = title;
             movieOverview.innerText = overview;
@@ -57,61 +77,86 @@ function fetchReviews(url) {
         .then(response => response.json())
         .then(function (data) {
             data.forEach(review => {
+                currentReviewId = review._id;
+                currentReviewText = review.review;
+                currentReviewUser = review.user;
+                review.rating ? currentReviewRating = review.rating : currentReviewRating = 0;
+
                 const divReview = document.createElement("div");
-                divReview.classList.add("col", "mb-3");
+                divReview.classList.add("col", "mb-3", "d-flex", "justify-content-center");
 
                 divReview.innerHTML = `
-                    <div class="card text-bg-light mb-3" id="${review._id}" style="width: 18rem; max-width: 20rem;">
-                        <div class="card-header"><em>Review</em></div>
+                    <div class="card text-bg-light mb-3" id="${currentReviewId}" style="width: 18rem; max-width: 20rem;">
+                        <div class="card-header bg-secondary text-light">
+                            <span class="badge text-wrap" id="rating-${currentReviewId}" readonly></span>
+                        </div>
+                        
                         <div class="card-body">
                             <h5 class="card-title">
-                                ${review.user}
+                                ${currentReviewUser}
                             </h5>
                             <p class="card-text font-monospace">
-                                ${review.review}
+                                ${currentReviewText}
                             </p>
 
                             <p>
-                                <a href="#" class="btn btn-sm btn-info" onclick="editReview('${review._id}', '${review.review}', '${review.user}')" hidden>
+                                <a href="#" class="btn btn-sm btn-info" onclick="editReview(\`${currentReviewId}\`, \`${currentReviewText}\`, \`${currentReviewUser}\`, \`${currentReviewRating}\`)" hidden>
                                     <i class="fa-solid fa-pencil"></i> Edit
                                 </a>
-                                <a href="#" class="btn btn-sm btn-secondary" onclick="deleteReview('${review._id}')" hidden>
+                                <a href="#" class="btn btn-sm btn-secondary" onclick="deleteReview('${currentReviewId}')" hidden>
                                     <i class="fa-solid fa-trash-can"></i> Delete
                                 </a>
                             </p>
                         </div>
                     </div>
                 `;
-
+                
+                // Appending the created review card to the reviews section
                 reviewsSection.appendChild(divReview);
+
+                // Setting up the rating stars for each review based on the current review's rating
+                setupReviewFormRatingStars(`rating-${currentReviewId}`, currentReviewRating, true);
             });
         });
 }
 
+// Fetching the reviews for the current movie
 fetchReviews(`${reviewsApiLink}movie/${movieId}`);
 
 
+// --------------------------------------------------------------------------------------------------------------------
 // Editing a review
-function editReview(reviewId, reviewText, reviewUser) {
+function editReview(reviewId, reviewText, reviewUser, reviewRating) {
     const element = document.getElementById(reviewId);
     const reviewInputId = "review" + reviewId;
     const userInputId = "user" + reviewId;
+    const ratingInputId = "rating" + reviewId;
 
     element.innerHTML = `
-        <div class="card-header"><em>Edit Review:</em></div>
+        <div class="card-header">
+            <h5>Edit Review:</h5>
+        </div>
+        
         <div class="card-body">
+            <div class="form-control mb-3">
+                <label for="${ratingInputId}">Rating: <small class="fst-italic">(click star to rate)</small></label>
+                <div id="${ratingInputId}">
+                    
+                </div>
+            </div>
+
             <div class="form-floating mb-3">
                 <textarea class="form-control" placeholder="Leave a comment here" id="${reviewInputId}" style="height: 100px;">${reviewText}</textarea>
-                <label for="newReviewInput"><em>Review:</em> </label>
+                <label for="${reviewInputId}"><em>Review:</em> </label>
             </div>
 
             <div class="form-floating mb-3">
                 <input type="text" class="form-control" id="${userInputId}" value="${reviewUser}">
-                <label for="newUserInput"><em>Name:</em></label>
+                <label for="${userInputId}"><em>Name:</em></label>
             </div>
 
             
-            <a href="#" class="btn btn-success" onclick="saveReview('${reviewInputId}', '${userInputId}', '${reviewId}')">
+            <a href="#" class="btn btn-success" onclick="saveReview('${reviewInputId}', '${userInputId}', '${ratingInputId}', '${reviewId}')">
                 <i class="fa-regular fa-floppy-disk"> </i> Update
             </a>
 
@@ -119,14 +164,24 @@ function editReview(reviewId, reviewText, reviewUser) {
                 <i class="fa-solid fa-x"></i> Cancel
             </a>
         </div>`;
+
+
+    // Setting up the rating stars in the review form for editing reviews
+    setupReviewFormRatingStars(ratingInputId, reviewRating);
 }
 
 
+// --------------------------------------------------------------------------------------------------------------------
 // Saving a new review or updating an existing review
-function saveReview(reviewInputId, userInputId, reviewId = null) {
+function saveReview(reviewInputId, userInputId, ratingInputId, reviewId = null) {
     const updatedReview = document.getElementById(reviewInputId).value;
     const updatedUser = document.getElementById(userInputId).value;
-
+    const updatedRating = document.getElementById(ratingInputId);
+    
+    // Getting the updated rating value from the rating stars in the edit review form
+    const selectedRatingStars = updatedRating.querySelectorAll(".fa-solid");    // Selecting all the filled star elements
+    const updatedRatingValue = selectedRatingStars.length;   // counting the number of filled stars to determine the selected rating value
+    
     if (reviewId) {
         // Updating an existing review
         fetch(`${reviewsApiLink}${reviewId}`, {
@@ -138,7 +193,8 @@ function saveReview(reviewInputId, userInputId, reviewId = null) {
             body: JSON.stringify(
                 {
                     "review": updatedReview,
-                    "user": updatedUser
+                    "user": updatedUser,
+                    "rating": updatedRatingValue
                 }
             )
         })
@@ -157,7 +213,8 @@ function saveReview(reviewInputId, userInputId, reviewId = null) {
             body: JSON.stringify({
                 "movieId": movieId,
                 "review": updatedReview,
-                "user": updatedUser
+                "user": updatedUser,
+                "rating": updatedRatingValue
             })
         })
             .then(response => response.json())
@@ -168,6 +225,7 @@ function saveReview(reviewInputId, userInputId, reviewId = null) {
 }
 
 
+// --------------------------------------------------------------------------------------------------------------------
 // Deleting a review
 function deleteReview(reviewId) {
     fetch(`${reviewsApiLink}${reviewId}`, {
@@ -180,6 +238,7 @@ function deleteReview(reviewId) {
 }
 
 
+// --------------------------------------------------------------------------------------------------------------------
 // Canceling the edit operation
 function cancelEdit() {
     location.reload();  // Reloading the page to cancel the edit operation and revert back to the original review display.
@@ -187,3 +246,101 @@ function cancelEdit() {
 
 
 // --------------------------------------------------------------------------------------------------------------------
+
+// ********************************************************************************************************************
+// Star Ratings
+
+// Functions
+// Creating the star elements for the rating system in the review form
+function createRatingStars(ratingCount, ratingElement) {
+    for (let i = 0; i < ratingCount; i++) {
+        const star = document.createElement("i");
+        star.classList.add("fa-star", "edit-allowed", "fa-regular");
+        ratingElement.appendChild(star);
+    }
+}
+
+// Updating the filled star elements based on the selected rating
+function updateRatingStars(ratingValue, ratingStarElements) {
+    ratingStarElements.forEach((star, index) => {
+        if (index < ratingValue) {
+            // Activate the star by changing its classes to represent a filled star
+            star.classList.remove("fa-regular");
+            star.classList.add("fa-solid");
+            star.classList.add("text-warning");
+        } else {
+            // Deactivate the star by changing its classes to represent an empty star
+            star.classList.remove("fa-solid");
+            star.classList.remove("text-warning");
+            star.classList.add("fa-regular");
+        }
+    });
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+// Handling the rating stars in the review form
+function setupReviewFormRatingStars(ratingElementId, initialRating = 10, isReadOnly = false) {
+    // Creating the rating stars in ratingElement
+    const ratingElement = document.querySelector(`#${ratingElementId}`);    // Selecting the rating element where the rating stars will be displayed
+    const numberOfStars = 10;   // Total number of stars for the rating system
+    createRatingStars(numberOfStars, ratingElement);
+
+    // Selecting all the star elements within the ratingElement to add event listeners for click events
+    let allRatingStars = ratingElement.querySelectorAll(".fa-star");
+
+    // Updating the star elements based on the initial rating value when the form is set up
+    updateRatingStars(initialRating, allRatingStars);
+
+    // Making the rating stars read-only if specified
+    if (isReadOnly) {
+        allRatingStars.forEach(star => {
+            // removing the "edit-allowed" class and disabling pointer events for the stars to prevent user interaction
+            star.classList.remove("edit-allowed");
+            star.style.pointerEvents = "none";
+        });
+    }
+
+    // Selecting all the star elements within the ratingElement to add event listeners for click events
+    let editableRatingStars = ratingElement.querySelectorAll(".edit-allowed");
+
+    let currentRating = initialRating;   // Variable to keep track of the current selected rating value
+    // Adding event listeners to each star for user interaction
+    editableRatingStars.forEach((star, index) => {
+        // Updating star and selected rating value based on user interactions with the stars in the review form
+
+        // When a star is clicked
+        star.addEventListener("click", function () {
+            currentRating = index + 1;
+            updateRatingStars(currentRating, editableRatingStars);
+            selectedRating = currentRating;
+        });
+
+        // When a star is hovered over
+        star.addEventListener("mouseover", function () {
+            tempRating = index + 1;
+            updateRatingStars(tempRating, editableRatingStars);
+        });
+
+        // When the mouse leaves a star
+        star.addEventListener("mouseout", function () {
+            updateRatingStars(currentRating, editableRatingStars);
+        });
+    });
+}
+
+// ********************************************************************************************************************
+
+// --------------------------------------------------------------------------------------------------------------------
+// Clean up String
+function cleanUpString(str) {
+    // Replace quotes with escaped quotes to prevent issues when passing strings as arguments in HTML attributes (e.g., onclick handlers).
+    str = str.replace(/'/g, "\\'").replace(/"/g, '\\"');
+
+    // Replacing multiple consecutive whitespace characters with a single space and trimming leading/trailing whitespace from the string.
+    str = str.replace(/\s+/g, ' ').trim();
+    
+    return str; // Returning the cleaned-up string after processing.
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+
