@@ -8,8 +8,6 @@ dotenv.config();  // Loading environment variables
 import mongodb from "mongodb";  // Importing the MongoDB driver to interact with a MongoDB database.
 import app from "./server.js";  // Importing the Express application instance from the server.js file
 import ReviewsDAO from "./dao/reviewsDAO.js";  // Importing the Reviews Data Access Object (DAO) module
-import tmdbDAO from "./dao/tmdbDAO.js"; // Importing the TMDB Data Access Object (DAO) module
-
 
 // --------------------------------------------------------------------------------------------------------------------
 // MongoDB Connection

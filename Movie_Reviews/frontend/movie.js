@@ -1,14 +1,14 @@
 // --------------------------------------------------------------------------------------------------------------------
 // Declarations
-const apiBaseURL = `https://movie-review-api-o8bs.onrender.com/api/v1`;  // Base URL for the backend API (deployed)
-// const apiBaseURL = `http://localhost:8000/api/v1`;  // Base URL for the backend API (local)
+const apiBaseURL = `https://movie-review-api-o8bs.onrender.com/api/v1`;  // Base URL for the backend API
 
-const reviewsApiLink = `${apiBaseURL}/reviews/`;
-const tmdbMovieApiLink = `${apiBaseURL}/tmdb/movie/`;
+const reviewsApiLink = `${apiBaseURL}/reviews/`;    // API URL for fetching reviews from the backend API (e.g., /api/v1/reviews/movie/{id}).
+const tmdbMovieApiLink = `${apiBaseURL}/tmdb/movie/`;   // API URL for fetching movie information from the backend API (e.g., /api/v1/tmdb/movie/{id}).
 
-const url = new URL(window.location.href);  // Creating a new URL object using the current window's URL, allowing us to easily access query parameters.
+const url = new URL(window.location.href);  // New URL object to access query parameters from the current window location.
 const movieId = url.searchParams.get("id");  // Extracting the "id" query parameter from the URL, which represents the movie ID for which we want to fetch reviews.
 
+// HTML Elements
 const reviewsSection = document.querySelector("#reviews-section");
 const movieTitle = document.querySelector("#movieTitle");
 const movieOverview = document.querySelector("#movieOverview");
@@ -35,13 +35,14 @@ function fetchMovieInfo(currentMovieId) {
     fetch(url)
         .then(response => response.json())
         .then(function (data) {
+            // Extracting relevant movie information from the response data to display on the page
             const title = data.title;
             const overview = data.overview;
             const releaseYear = data.release_date.split("-")[0]
 
+            // Handling movie images
             let imgPath = "";
             let imgBasePath = "https://image.tmdb.org/t/p/w1280";
-
             if (data.poster_path) {
                 imgPath = imgBasePath + data.poster_path; // Using the poster image if available
             } else if (data.backdrop_path) {
@@ -120,9 +121,9 @@ function fetchReviews(url) {
         });
 }
 
+
 // Fetching the reviews for the current movie
 fetchReviews(`${reviewsApiLink}movie/${movieId}`);
-
 
 // --------------------------------------------------------------------------------------------------------------------
 // Editing a review
@@ -200,7 +201,7 @@ function saveReview(reviewInputId, userInputId, ratingInputId, reviewId = null) 
         })
             .then(response => response.json())
             .then(res => {
-                location.reload();  // Reloading the page to reflect the updated review after a successful update operation.
+                location.reload();  // Reloading the page
             });
     } else {
         // Creating a new review
@@ -219,7 +220,7 @@ function saveReview(reviewInputId, userInputId, ratingInputId, reviewId = null) 
         })
             .then(response => response.json())
             .then(res => {
-                location.reload();
+                location.reload();  // Reloading the page
             });
     }
 }
@@ -233,7 +234,7 @@ function deleteReview(reviewId) {
     })
         .then(response => response.json())
         .then(res => {
-            location.reload();
+            location.reload();  // Reloading the page
         });
 }
 
@@ -241,14 +242,14 @@ function deleteReview(reviewId) {
 // --------------------------------------------------------------------------------------------------------------------
 // Canceling the edit operation
 function cancelEdit() {
-    location.reload();  // Reloading the page to cancel the edit operation and revert back to the original review display.
+    location.reload();  // Reloading the page
 }
 
 
 // --------------------------------------------------------------------------------------------------------------------
 
 // ********************************************************************************************************************
-// Star Ratings
+// Handling Star Ratings
 
 // Functions
 // Creating the star elements for the rating system in the review form

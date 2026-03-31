@@ -2,7 +2,6 @@
 // Imports
 import ReviewsDAO from "../dao/reviewsDAO.js";  // Importing the Reviews Data Access Object (DAO) module, 
 
-
 // --------------------------------------------------------------------------------------------------------------------
 // Exporting the ReviewsController class
 export default class ReviewsController {
@@ -52,7 +51,7 @@ export default class ReviewsController {
         try {
             const reviewId = request.params.id;  // Retrieving the review ID from the request parameters.
             const review = request.body.review;  // Retrieving the updated review text from the request body.
-            const user = request.body.user;  // Retrieving the user information from the request body.
+            const user = request.body.user; // Retrieving the user information from the request body.
             const rating = request.body.rating;  // Retrieving the updated rating from the request body.
 
             // Calling the updateReview method from the ReviewsDAO to update the specified review in the database.

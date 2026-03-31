@@ -84,8 +84,10 @@
                     <hr>
 
                     <div class="form-control mb-3">
-                        <label for="newRatingInput">Rating: <small class="fst-italic">(click star to rate)</small></label>
-                        <div id="newRatingInput" >
+                        <label for="newRatingInput">
+                            Rating: <small class="fst-italic">(click star to rate)</small>
+                        </label>
+                        <div id="newRatingInput">
                             <!-- Movie Rating Stars -->
                         </div>
                     </div>
@@ -101,8 +103,10 @@
                         <label for="newUserInput"><em>Name:</em></label>
                     </div>
 
-                    <a href="#" class="btn btn-primary" onclick="saveReview('newReviewInput', 'newUserInput', 'newRatingInput')"> <i
-                            class="fa-regular fa-floppy-disk"> </i> Save</a>
+                    <a href="#" class="btn btn-primary"
+                        onclick="saveReview('newReviewInput', 'newUserInput', 'newRatingInput')">
+                        <i class="fa-regular fa-floppy-disk"> </i> Save
+                    </a>
                 </div>
             </div>
 
@@ -125,6 +129,14 @@
     </div>
 
 
+    <!-- Footer -->
+    <div class="mt-5">
+        <hr class="border border-light border-1 opacity-50">
+        <footer class="mt-auto d-flex justify-content-center align-items-center">
+            <p id="footerSign" class="text-white-50">Dev-by-Aka&trade;</p>
+        </footer>
+    </div>
+
 
     <!-- Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
@@ -133,7 +145,6 @@
 
     <!-- Custom JavaScript -->
     <script src="movie.js"></script>
-        <!-- <script src="rating.js"></script> -->
 
 </body>
 

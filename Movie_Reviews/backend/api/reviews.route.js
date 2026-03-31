@@ -9,17 +9,18 @@ const reviewsRouter = express.Router();  // Creating a new router instance from 
 
 // --------------------------------------------------------------------------------------------------------------------
 // Routes for the reviews API
+
 // Base route: /api/v1/reviews
 reviewsRouter.route("/").get((request, response) => {
-    // Defining a GET route for the root path of the reviews API (e.g., /api/v1/reviews/).
+    // Defining a GET route for the root path of the reviews API
     response.json({
         message: "Hello, Thank you for using my Movie Reviews API!",
         help: [
             {
                 endpoint: "/api/v1/reviews/movie/{id}",
                 method: "GET",
-                description: "Fetch reviews for a specific movie by its movie ID.",
-                body: "" 
+                description: "Fetch reviews for a specific movie by its TMDB movie ID.",
+                body: "N/A" 
             },
             {
                 endpoint: "/api/v1/reviews/new",
@@ -31,7 +32,7 @@ reviewsRouter.route("/").get((request, response) => {
                 endpoint: "/api/v1/reviews/{id}",
                 method: "GET",
                 description: "Fetch a specific review by its review ID.",
-                body: ""
+                body: "N/A"
             },
             {
                 endpoint: "/api/v1/reviews/{id}",
@@ -43,7 +44,7 @@ reviewsRouter.route("/").get((request, response) => {
                 endpoint: "/api/v1/reviews/{id}",
                 method: "DELETE",
                 description: "Delete a specific review by its review ID.",
-                body: ""
+                body: "N/A"
             }
         ]
     });  // JSON object in response.
@@ -51,9 +52,9 @@ reviewsRouter.route("/").get((request, response) => {
 
 
 // --------------------------------------------------------------------------------------------------------------------
-// Routes for handling specific review-related operations, 
+// Other routes for handling specific review-related operations, 
 
-// 'GET' route for fetching reviews of a specific movie by its movie ID 
+// 'GET' route for fetching reviews of a specific movie by its TMDB movie ID 
 reviewsRouter.route("/movie/:id").get(ReviewsController.apiGetReviews);
 // (e.g., /api/v1/reviews/movie/123).
 
@@ -67,7 +68,7 @@ reviewsRouter.route("/:id")
     .put(ReviewsController.apiUpdateReview)
     .delete(ReviewsController.apiDeleteReview);
 
-
+    
 // --------------------------------------------------------------------------------------------------------------------
 // Exports
 export default reviewsRouter;  // Exporting the reviewsRouter instance

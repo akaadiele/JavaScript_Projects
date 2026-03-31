@@ -1,3 +1,4 @@
+/* Global Styles */
 * {
     box-sizing: border-box;
     font-family: "Montserrat", sans-serif;
@@ -6,14 +7,17 @@
     font-style: normal;
 }
 
+/* Body Styles */
 body {
     background-color: #000000;
 }
 
+/* Background Styles */
 .bg-1 {
     background-color: #eee5e9;
 }
 
+/* Navigation Title Styles */
 .nav-title {
     font-family: "Orbitron", sans-serif;
     font-optical-sizing: auto;
@@ -22,17 +26,20 @@ body {
     font-weight: 600;
 }
 
+/* Loading Text Styles */
 #loadingText {
     font-size: 1.5rem;
     font-weight: 500;
 }
 
+/* Footer Section Styles */
 #footerSign {
     font-family: "Delius Swash Caps", cursive;
     font-weight: 400;
     font-style: italic;
 }
 
+/* Star Icon Styles */
 .fa-star {
     cursor: pointer;
     font-size: 1.0rem;
