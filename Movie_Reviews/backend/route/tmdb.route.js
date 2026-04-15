@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 // Imports
 import express from "express";  // Importing the Express.js framework to create a web server and handle HTTP requests.
-import TMDB_Controller from "./tmdb.controller.js";  // Importing the TMDB_Controller module, which contains the logic for handling requests related to TMDB third-party API.
+import TMDB_Controller from "../controller/tmdb.controller.js";  // Importing the TMDB_Controller module, which contains the logic for handling requests related to TMDB third-party API.
 
 // --------------------------------------------------------------------------------------------------------------------
 // Router

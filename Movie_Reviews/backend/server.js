@@ -2,8 +2,8 @@
 // Imports
 import express from "express";  // Importing the Express.js framework
 import cors from "cors";  // Importing the CORS middleware
-import reviews from "./api/reviews.route.js";  // Importing the reviews route module
-import tmdb from "./api/tmdb.route.js";  // Importing the TMDB route module
+import reviews from "./route/reviews.route.js";  // Importing the reviews route module
+import tmdb from "./route/tmdb.route.js";  // Importing the TMDB route module
 
 // --------------------------------------------------------------------------------------------------------------------
 // Create Express App

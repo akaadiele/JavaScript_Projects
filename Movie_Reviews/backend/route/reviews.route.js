@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 // Imports
 import express from "express";  // Importing the Express.js framework to create a web server and handle HTTP requests.
-import ReviewsController from "./reviews.controller.js";  // Importing the ReviewsController module, which contains the logic for handling requests related to movie reviews.
+import ReviewsController from "../controller/reviews.controller.js";  // Importing the ReviewsController module, which contains the logic for handling requests related to movie reviews.
 
 // --------------------------------------------------------------------------------------------------------------------
 // Router

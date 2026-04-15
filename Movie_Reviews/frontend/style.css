@@ -44,3 +44,7 @@ body {
     cursor: pointer;
     font-size: 1.0rem;
 }
+
+.ratingTotal {
+    font-size: 0.6rem;
+}
