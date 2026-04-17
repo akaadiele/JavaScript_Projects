@@ -1,7 +1,6 @@
 // --------------------------------------------------------------------------------------------------------------------
 // Declarations
 const tmdbApiLink = `https://movie-review-api-o8bs.onrender.com/api/v1/tmdb`;  // Base URL for the backend API
-// const tmdbApiLink = `http://localhost:8000/api/v1/tmdb`;  // Base URL for the backend API (local development)
 
 const discoverApi = `${tmdbApiLink}/discover`;  // API URL for fetching popular movies from TMDB
 const imgBasePath = 'https://image.tmdb.org/t/p/w1280'; // API URL for fetching movie images from TMDB
@@ -87,7 +86,7 @@ searchForm.addEventListener("submit", (evt) => {
     evt.preventDefault();   // Preventing the default form submission behavior
 
     movieSection.innerHTML = "";    // Clearing the movie section to display the search results
-    
+
     const searchText = searchQuery.value;
     if (searchText) {
         // Search using user's input
