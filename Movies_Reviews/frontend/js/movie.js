@@ -1,7 +1,6 @@
 // --------------------------------------------------------------------------------------------------------------------
 // Declarations
 const apiBaseURL = `https://movie-review-api-o8bs.onrender.com/api/v1`;  // Base URL for the backend API
-// const apiBaseURL = `http://localhost:8000/api/v1`;  // Base URL for the backend API (local development)
 
 const reviewsApiLink = `${apiBaseURL}/reviews/`;    // API URL for fetching reviews from the backend API (e.g., /api/v1/reviews/movie/{id}).
 const tmdbMovieApiLink = `${apiBaseURL}/tmdb/movie/`;   // API URL for fetching movie information from the backend API (e.g., /api/v1/tmdb/movie/{id}).
@@ -200,6 +199,8 @@ function saveReview(reviewInputId, userInputId, ratingInputId, reviewId = null) 
     const updatedReview = document.getElementById(reviewInputId).value;
     const updatedUser = document.getElementById(userInputId).value;
     const updatedRating = document.getElementById(ratingInputId);
+    
+    const tmdbMovieTitle = movieTitle.innerText;
 
     // Getting the updated rating value from the rating stars in the edit review form
     const selectedRatingStars = updatedRating.querySelectorAll(".fa-solid");    // Selecting all the filled star elements
@@ -217,7 +218,8 @@ function saveReview(reviewInputId, userInputId, ratingInputId, reviewId = null) 
                 {
                     "review": updatedReview,
                     "user": updatedUser,
-                    "rating": updatedRatingValue
+                    "rating": updatedRatingValue,
+                    "movieTitle": tmdbMovieTitle
                 }
             )
         })
@@ -237,7 +239,8 @@ function saveReview(reviewInputId, userInputId, ratingInputId, reviewId = null) 
                 "movieId": movieId,
                 "review": updatedReview,
                 "user": updatedUser,
-                "rating": updatedRatingValue
+                "rating": updatedRatingValue,
+                "movieTitle": tmdbMovieTitle
             })
         })
             .then(response => response.json())

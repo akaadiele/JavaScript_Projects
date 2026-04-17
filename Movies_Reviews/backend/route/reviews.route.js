@@ -26,7 +26,7 @@ reviewsRouter.route("/").get((request, response) => {
                 endpoint: "/api/v1/reviews/new",
                 method: "POST",
                 description: "Create a new review for a specific movie.",
-                body: "{ movieId: Number, review: String, user: String, rating: Number }"
+                body: "{ movieId: Number, review: String, user: String, rating: Number, movieTitle: String (optional) }"
             },
             {
                 endpoint: "/api/v1/reviews/{id}",
@@ -38,7 +38,7 @@ reviewsRouter.route("/").get((request, response) => {
                 endpoint: "/api/v1/reviews/{id}",
                 method: "PUT",
                 description: "Update a specific review by its review ID.",
-                body: "{ review: String, user: String, rating: Number }"
+                body: "{ review: String, user: String, rating: Number, movieTitle: String (optional) }"
             },
             {
                 endpoint: "/api/v1/reviews/{id}",

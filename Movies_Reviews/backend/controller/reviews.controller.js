@@ -13,6 +13,7 @@ export default class ReviewsController {
             const review = request.body.review;  // Retrieving the review text from the request body.
             const user = request.body.user;  // Retrieving the user information from the request body.
             const rating = request.body.rating;  // Retrieving the rating from the request body.
+            const movieTitle = request.body.movieTitle || "";  // Retrieving the movie title from the request body, or defaulting to an empty string if not provided.
 
             if (!movieId || movieId == null || !review || review == null || !user || user == null || !rating || rating == null) {  // Validating the required fields (movieId, review, user, and rating) to ensure they are provided in the request body.
                 response.status(400).json({ error: "Missing required fields: movieId, review, user, and rating are required." });
@@ -20,7 +21,7 @@ export default class ReviewsController {
             }
 
             // Calling the addReview method from the ReviewsDAO to add a new review to the database.
-            const reviewResponse = await ReviewsDAO.addReview(movieId, review, user, rating);
+            const reviewResponse = await ReviewsDAO.addReview(movieId, review, user, rating, movieTitle);
 
             // Success response
             response.json({ status: "success" });
@@ -69,9 +70,10 @@ export default class ReviewsController {
             const review = request.body.review;  // Retrieving the updated review text from the request body.
             const user = request.body.user; // Retrieving the user information from the request body.
             const rating = request.body.rating;  // Retrieving the updated rating from the request body.
+            const movieTitle = request.body.movieTitle || "";  // Retrieving the movie title from the request body, or defaulting to an empty string if not provided.
 
             // Calling the updateReview method from the ReviewsDAO to update the specified review in the database.
-            const reviewResponse = await ReviewsDAO.updateReview(reviewId, user, review, rating);
+            const reviewResponse = await ReviewsDAO.updateReview(reviewId, user, review, rating, movieTitle);
 
             var { error } = reviewResponse;  // Destructuring the error property from the review response.
             if (error) {  // Checking if there was an error in the review response.
