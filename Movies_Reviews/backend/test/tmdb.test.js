@@ -25,8 +25,14 @@ describe("TMDB Routes", () => {
     });
 
     describe("TMDB Routes that hit the getPopularMovies mock method", () => {
-        // Lifecycle methods to run before and after each test in this test suite
+        // Lifecycle methods to run after each test in this test suite
         let movieSpy;
+        
+        afterEach(() => {   // runs automatically after every test
+            // Restoring the original implementation of the getMovie method after the test is complete.
+            movieSpy.mockRestore();
+        });
+
 
         // 2. Test case to check if the GET /api/v1/tmdb/discover route returns an array
         test("GET /api/v1/tmdb/discover; returns an array & 'total_pages' > 0 & 'total_results' > 0", async () => {
@@ -90,14 +96,11 @@ describe("TMDB Routes", () => {
             expect(response.body.total_results).toBeGreaterThan(0);  // Expecting the 'total_results' property in the response body to be greater than 0.
             expect(response.body).toHaveProperty("results");  // Expecting the response body to have a property 'results'
             expect(response.status).toBe(200);  // Expecting the HTTP status code of the response to be 200 (OK).
-
-            // Restoring the original implementation of the getPopularMovies method after the test is complete.
-            movieSpy.mockRestore();
         });
     });
 
     describe("TMDB Routes that hit the getMovie mock method", () => {
-        // Lifecycle methods to run before and after each test in this test suite
+        // Lifecycle methods to run after each test in this test suite
         let movieSpy;
 
         afterEach(() => {   // runs automatically after every test

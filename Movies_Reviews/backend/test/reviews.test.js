@@ -190,7 +190,7 @@ describe("Reviews Routes", () => {
     describe("Reviews Routes that hit the updateReview mock method", () => {
         // Lifecycle methods to run after each test in this test suite
         afterEach(() => {   // runs automatically after every test
-            // Restoring the original implementation of the addReview method after the test is complete.
+            // Restoring the original implementation of the updateReview method after the test is complete.
             reviewsSpy.mockRestore();
         });
 
@@ -222,7 +222,7 @@ describe("Reviews Routes", () => {
     describe("Reviews Routes that hit the deleteReview mock method", () => {
         // Lifecycle methods to run after each test in this test suite
         afterEach(() => {   // runs automatically after every test
-            // Restoring the original implementation of the addReview method after the test is complete.
+            // Restoring the original implementation of the deleteReview method after the test is complete.
             reviewsSpy.mockRestore();
         });
 
