@@ -11,7 +11,17 @@ const app = express();  // Creating an instance of the Express application.
 
 // --------------------------------------------------------------------------------------------------------------------
 // Express app configurations
-app.use(cors());  // Enabling CORS for all routes, allowing the server to accept requests from any origin.
+// app.use(cors());  // Enabling CORS for all routes, allowing the server to accept requests from any origin.
+app.use(cors({
+    // origin: "*",  // Allowing requests from any origin (for development purposes). In production, specify allowed origins for better security.
+    // methods: ["GET", "POST", "PUT", "DELETE"],  // Allowing specific HTTP methods for CORS requests.
+    // allowedHeaders: ["Content-Type", "Authorization"]  // Allowing specific headers in CORS requests.
+    origin: [
+        "http://localhost:5500",  // Allowing requests from the local development frontend.
+        "http://127.0.0.1:5500",  // Allowing requests from the local development frontend (alternative localhost address).
+        "https://movies-and-reviews.onrender.com"  // Allowing requests from the deployed frontend on Render.
+    ]
+}));
 app.use(express.json());  // Middleware to accept and handle incoming JSON requestsy
 
 // --------------------------------------------------------------------------------------------------------------------
