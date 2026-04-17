@@ -84,17 +84,17 @@ function fetchReviews(url) {
     fetch(url)
         .then(response => response.json())
         .then(function (data) {
-            data.forEach(review => {
+            data.reviews.forEach(review => {
                 currentReviewId = review._id;
                 currentReviewText = review.review;
                 currentReviewUser = review.user;
                 review.rating ? currentReviewRating = review.rating : currentReviewRating = 0;
 
-                // console.log("Current review rating:", currentReviewRating);
-                sumOfRating += currentReviewRating;
-                numberOfReviews++;
+                // Values for calculating average rating
+                sumOfRating += currentReviewRating;     // Accumulating the sum of ratings
+                numberOfReviews++;  // Incrementing the count of reviews
 
-
+                // Creating a review card for each review and displaying it on the page
                 const divReview = document.createElement("div");
                 divReview.classList.add("col", "mb-3", "d-flex", "justify-content-center");
 

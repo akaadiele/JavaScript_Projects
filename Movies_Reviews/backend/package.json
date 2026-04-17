@@ -8,12 +8,20 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {}
   },
   "dependencies": {
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
     "mongodb": "^7.1.0"
+  },
+  "devDependencies": {
+    "jest": "^30.3.0",
+    "supertest": "^7.2.2"
   }
 }

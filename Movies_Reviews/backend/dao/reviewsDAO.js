@@ -33,7 +33,7 @@ export default class ReviewsDAO {
         try {
             // Creating a review document object to be inserted into the reviews collection
             const reviewDoc = {
-                movieId: parseInt(movieId),  // Storing the movie ID as a number to match existing query behavior.
+                movieId: movieId,   // Storing the movie ID as is without converting it to a number, to allow for more flexible input formats (e.g., string or number). 
                 user: user,     // Storing the user information in the database.
                 review: review,     // Storing the review text in the database.
                 rating: rating,   // Storing the rating in the database.
@@ -108,15 +108,22 @@ export default class ReviewsDAO {
     // Method to fetch all reviews for a specific movie by its ID.
     static async getReviewsByMovieId(movieId) {
         try {
+            const numericMovieId = Number(movieId); // Attempting to convert the movie ID to a number for querying, while still allowing for string input that can be converted to a number (e.g., "123" or 123).
+            const movieIdQuery = Number.isNaN(numericMovieId)   
+                ? { movieId: movieId }
+                : { $or: [{ movieId: movieId }, { movieId: numericMovieId }] };
+            // Checking if the conversion to a number resulted in NaN, which indicates that the movie ID cannot be converted to a valid number. 
+            // If it is NaN, we will query using the original movieId as a string; 
+            // otherwise, we will query using both the original movieId and the numericMovieId to allow for flexible querying with either string or numeric movie IDs.
+
             // Fetching all reviews for a specific movie by its ID.
             const cursor = await reviews.find(  // Querying the reviews collection for reviews that match the specified movie ID
-                { 
-                    movieId: parseInt(movieId)  // Converting the movie ID to a number to match existing query behavior
-                }
+                movieIdQuery
             );  //  Returning a cursor to iterate over the results.
 
             // Returning all reviews for the specified movie ID as an array of objects.
-            return await cursor.toArray();  // Converting the cursor to an array of review documents and returning it.
+            const reviewsArray = await cursor.toArray();  // Converting the cursor to an array of review documents and returning it.
+            return { reviews: reviewsArray };  // Returning the array of review documents.
         } catch (error) {
             console.error("Error fetching reviews:", error);    // Logging the error to the console for debugging purposes.
             return { error: "Unable to get reviews", details: error.message };  // Error response
