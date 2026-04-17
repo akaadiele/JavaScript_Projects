@@ -1,44 +1,56 @@
+# GitHub Actions Workflow for Movies & Reviews CI Pipeline
 name: Movies & Reviews CI Pipeline
 
+# Trigger the workflow on push or pull request events to the main branch and when changes are made to the Movies_Reviews directory or the workflow file itself
 on:
   push:
-    branches: [main]
-    paths:
-      - Movies_Reviews/**
+    branches: [main]  # Trigger the workflow when code is pushed to the main branch
+    paths:  # Trigger the workflow when changes are made to any files in the Movies_Reviews directory or the workflow file itself
+      - Movies_Reviews/**   # Trigger on changes to any files in the Movies_Reviews directory
       - .github/workflows/movies-reviews-ci.yml
   pull_request:
-    branches: [main]
-    paths:
-      - Movies_Reviews/**
-      - .github/workflows/movies-reviews-ci.yml
+    branches: [main]  # Trigger the workflow when a pull request is opened against the main branch
+    paths:  # Trigger the workflow when changes are made to any files in the Movies_Reviews directory or the workflow file itself
+      - Movies_Reviews/**  # Trigger on changes to any files in the Movies_Reviews directory
+      - .github/workflows/movies-reviews-ci.yml # Trigger on changes to this particular workflow file itself, ensuring that updates to the CI configuration also trigger the workflow
 
+# Define the jobs to be run in this workflow
 jobs:
-  test:
-    name: Run Tests
-    runs-on: ubuntu-latest
+  test: # Define a job named 'test' to run the test suite
+    name: Run Tests   # Name of the job that will be displayed in the GitHub Actions UI
+    runs-on: ubuntu-latest  # Specify the operating system for the job (using the latest version of Ubuntu)
 
+    # Set defaults
     defaults:
-      run:
+      run:  # Set the default working directory for all run steps in this job to the backend directory
         working-directory: Movies_Reviews/backend
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    steps:  # Define the steps to be executed in this job
+      # Step 1 - Check out your code onto the GitHub machine
+      - name: Checkout code  # Name of the step that will be displayed in the GitHub Actions UI
+        uses: actions/checkout@v4 # Use the checkout action to clone the repository's code onto the runner machine
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      # Step 2 - Install the Node.js version matching your local setup
+      - name: Set up Node.js  # Name of the step that will be displayed in the GitHub Actions UI
+        uses: actions/setup-node@v4  # Use the setup-node action to set up the Node.js environment on the runner machine
         with:
-          node-version: 24
-          cache: npm
-          cache-dependency-path: Movies_Reviews/backend/package-lock.json
+          node-version: 24  # Specify the version of Node.js to be installed (matching the version used in local development)
+          cache: "npm"  # Enable caching for npm dependencies to speed up subsequent runs of the workflow
+          cache-dependency-path: Movies_Reviews/backend/package-lock.json # Specify the path to the package-lock.json file for caching npm dependencies
 
-      - name: Install dependencies
-        run: npm ci
+      # Step 3 - Install dependencies
+      - name: Install dependencies  # Name of the step that will be displayed in the GitHub Actions UI
+        run: npm ci # Run the command to install the dependencies defined in the package.json file using npm ci for a clean install
+        # npm ci is used instead of npm install in CI environments to ensure a clean and consistent installation of dependencies based on the package-lock.json file, 
+        # which can help prevent issues caused by changes in the dependency tree.
+        # The 'run' command will execute the 'npm ci' command in the 'Movies_Reviews/backend' directory, as set by the defaults at the job level.
 
-      - name: Run tests
-        env:
+      # Step 4 - Run test suite
+      - name: Run tests  # Name of the step that will be displayed in the GitHub Actions UI
+        env:  # Define environment variables needed for the tests, using secrets stored in GitHub for security
           PORT: ${{ secrets.PORT }}
           MONGODB_U: ${{ secrets.MONGODB_U }}
           MONGODB_P: ${{ secrets.MONGODB_P }}
           TMDB_K: ${{ secrets.TMDB_K }}
-        run: npm test
+        run: npm test # Run the command to execute the test suite defined in the package.json file (e.g., using Jest or another testing framework)
+        # The 'run' command will execute the 'npm test' command in the 'Movies_Reviews/backend' directory, as set by the defaults at the job level.

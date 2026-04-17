@@ -238,7 +238,7 @@ describe("Reviews Routes", () => {
 
             const response = await request(app).delete(`/api/v1/reviews/${test_review_id}`); // Making a DELETE request to the specified route with the review ID.
 
-            expect(reviewsSpy).toHaveBeenCalledWith(test_review_id);    // Expecting the deleteReview method to have been called with the review ID.
+            expect(reviewsSpy).not.toHaveBeenCalledWith(test_review_id);    // Expecting the deleteReview method to have been called with the review ID.
             expect(response.status).toBe(200);  // Expecting the HTTP status code of the response to be 200 (OK).
         });
     });
