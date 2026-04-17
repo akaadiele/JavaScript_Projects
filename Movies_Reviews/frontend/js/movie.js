@@ -16,6 +16,7 @@ const movieReleaseYear = document.querySelector("#movieReleaseYear");
 const movieAverageRating = document.querySelector("#averageRating");
 const imdbLinkElement = document.querySelector("#imdbLink");
 const reviewsSection = document.querySelector("#reviews-section");
+const titleElement = document.querySelector("title");
 
 let selectedRating = 10;    // Selected rating for new reviews initialized to 10
 
@@ -56,6 +57,8 @@ function fetchMovieInfo(currentMovieId) {
             } else {
                 imgPath = "./img/default_movie.jpg";  // Default image if no poster or backdrop is available
             }
+
+            titleElement.innerText += ` - ${title}`;   // Appending the movie title to the page title for better user experience and SEO
 
             movieTitle.innerText = title;
             movieOverview.innerText = overview;
