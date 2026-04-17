@@ -8,6 +8,7 @@ A small full-stack app for browsing movies and managing user reviews.
 - Exposes REST endpoints under `/api/v1/reviews` for full review CRUD.
 - Stores reviews with `movieId`, `user`, `review`, `rating`, and `date` fields.
 - Includes a custom TMDB proxy API under `/api/v1/tmdb` so the frontend can fetch movie data through your backend.
+- 
 
 ## Custom TMDB API
 - `GET /api/v1/tmdb/discover`: fetches popular movies.
