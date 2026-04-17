@@ -142,7 +142,8 @@ describe("Reviews Routes", () => {
                 movieId: test_movie_id,
                 user: "TestUser",
                 review: "This is a test review.",
-                rating: 10
+                rating: 10,
+                movieTitle: "Test Movie"
             };
 
             // Mocking the addReview method of the ReviewsDAO to return a success response for testing purposes.
@@ -156,7 +157,8 @@ describe("Reviews Routes", () => {
                 test_request_body.movieId, 
                 test_request_body.review, 
                 test_request_body.user, 
-                test_request_body.rating
+                test_request_body.rating,
+                test_request_body.movieTitle
             );    // Expecting the addReview method to have been called with the new review data.
             expect(response.status).toBe(200);  // Expecting the HTTP status code of the response to be 200 (OK).
         });
@@ -168,7 +170,8 @@ describe("Reviews Routes", () => {
             let test_request_body = {
                 movieId: test_movie_id,
                 user: "TestUser",
-                rating: 10
+                rating: 10,
+                movieTitle: "Test Movie"
             };  // Sample request body with missing 'review' field for testing purposes.
 
             // Mocking the addReview method of the ReviewsDAO to return an error response for testing purposes.
@@ -202,7 +205,8 @@ describe("Reviews Routes", () => {
             let test_request_body = {
                 user: "TestUser",
                 review: "This is a test review.",
-                rating: 10
+                rating: 10,
+                movieTitle: "Test Movie"
             };
 
             // Mocking the updateReview method of the ReviewsDAO to return a success response for testing purposes.
@@ -213,7 +217,11 @@ describe("Reviews Routes", () => {
             const response = await request(app).put(`/api/v1/reviews/${test_review_id}`).send(test_request_body); // Making a PUT request to the specified route with the updated review data.
 
             expect(reviewsSpy).toHaveBeenCalledWith(
-                test_review_id, test_request_body.user, test_request_body.review, test_request_body.rating
+                test_review_id, 
+                test_request_body.user, 
+                test_request_body.review, 
+                test_request_body.rating, 
+                test_request_body.movieTitle
             );    // Expecting the updateReview method to have been called with the updated review data.
             expect(response.status).toBe(200);  // Expecting the HTTP status code of the response to be 200 (OK).
         });
