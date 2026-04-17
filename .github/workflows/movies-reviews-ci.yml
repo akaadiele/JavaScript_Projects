@@ -54,3 +54,11 @@ jobs:
           TMDB_K: ${{ secrets.TMDB_K }}
         run: npm test # Run the command to execute the test suite defined in the package.json file (e.g., using Jest or another testing framework)
         # The 'run' command will execute the 'npm test' command in the 'Movies_Reviews/backend' directory, as set by the defaults at the job level.
+      
+      # # Step 5 - Deploy to Render (only runs if tests pass)
+      # - name: Deploy to Render  # Name of the step that will be displayed in the GitHub Actions UI
+      #   if: success()  # This step will only run if all previous steps in the job have succeeded (i.e., if the tests pass)
+      #   uses: render-examples/deploy-to-render@v1.0.0  # Use a custom action to deploy the application to Render
+      #   with:
+      #     api_key: ${{ secrets.RENDER_API_KEY }}  # Pass the Render API key as an input to the action, using a secret stored in GitHub for security
+      #     service_id: ${{ secrets.RENDER_SERVICE_ID }}  # Pass the Render service ID as an input to the action, using a secret stored in GitHub for security
