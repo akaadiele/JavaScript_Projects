@@ -11,18 +11,18 @@ const app = express();  // Creating an instance of the Express application.
 
 // --------------------------------------------------------------------------------------------------------------------
 // Express app configurations
-// app.use(cors());  // Enabling CORS for all routes, allowing the server to accept requests from any origin.
 app.use(cors({
-    // origin: "*",  // Allowing requests from any origin (for development purposes). In production, specify allowed origins for better security.
-    // methods: ["GET", "POST", "PUT", "DELETE"],  // Allowing specific HTTP methods for CORS requests.
-    // allowedHeaders: ["Content-Type", "Authorization"]  // Allowing specific headers in CORS requests.
     origin: [
+        "https://movies-and-reviews.onrender.com",  // Allowing requests from the deployed frontend on Render.
         "http://localhost:5500",  // Allowing requests from the local development frontend.
         "http://127.0.0.1:5500",  // Allowing requests from the local development frontend (alternative localhost address).
-        "https://movies-and-reviews.onrender.com"  // Allowing requests from the deployed frontend on Render.
-    ]
+        "https://akaadiele.github.io"   // Allowing requests from the GitHub Pages deployment of the frontend.
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE"],  // Allowing specific HTTP methods for CORS requests.
+    allowedHeaders: ["Content-Type", "Authorization", "Accept"]  // Allowing specific headers in CORS requests.
 }));
-app.use(express.json());  // Middleware to accept and handle incoming JSON requestsy
+
+app.use(express.json());  // Middleware to accept and handle incoming JSON requests.
 
 // --------------------------------------------------------------------------------------------------------------------
 // Routes
@@ -36,7 +36,7 @@ app.use("/api/v1/tmdb", tmdb);  // Mounting the TMDB route at the specified path
 
 
 // Backup Route
-app.use(/./, (request, response) => {  
+app.use(/./, (request, response) => {
     // A catch-all route that matches any request that doesn't match the defined route above.
     // Custom error handling
     response.status(404).json({ error: "Not Found" });

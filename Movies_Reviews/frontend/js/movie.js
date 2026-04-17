@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 // Declarations
-// const apiBaseURL = `https://movie-review-api-o8bs.onrender.com/api/v1`;  // Base URL for the backend API
-const apiBaseURL = `http://localhost:8000/api/v1`;  // Base URL for the backend API (local development)
+const apiBaseURL = `https://movie-review-api-o8bs.onrender.com/api/v1`;  // Base URL for the backend API
+// const apiBaseURL = `http://localhost:8000/api/v1`;  // Base URL for the backend API (local development)
 
 const reviewsApiLink = `${apiBaseURL}/reviews/`;    // API URL for fetching reviews from the backend API (e.g., /api/v1/reviews/movie/{id}).
 const tmdbMovieApiLink = `${apiBaseURL}/tmdb/movie/`;   // API URL for fetching movie information from the backend API (e.g., /api/v1/tmdb/movie/{id}).
