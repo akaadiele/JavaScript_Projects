@@ -1,6 +1,10 @@
 # GitHub Actions Workflow for Movies & Reviews CI Pipeline
 name: Movies & Reviews CI Pipeline
 
+# Opt into the newer JavaScript actions runtime before GitHub flips the default.
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 # Trigger the workflow on push or pull request events to the main branch and when changes are made to the Movies_Reviews directory or the workflow file itself
 on:
   push:
