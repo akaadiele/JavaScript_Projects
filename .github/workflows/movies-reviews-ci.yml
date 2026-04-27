@@ -32,7 +32,7 @@ jobs:
     steps:  # Define the steps to be executed in this job
       # Step 1 - Check out your code onto the GitHub machine
       - name: Checkout code  # Name of the step that will be displayed in the GitHub Actions UI
-        uses: actions/checkout@v4 # Use the checkout action to clone the repository's code onto the runner machine
+        uses: actions/checkout@v5 # Use the checkout action to clone the repository's code onto the runner machine
 
       # Step 2 - Install the Node.js version matching your local setup
       - name: Set up Node.js  # Name of the step that will be displayed in the GitHub Actions UI
@@ -81,7 +81,7 @@ jobs:
     steps:  # Define the steps to be executed in this job
       # Step 1 - Check out your code onto the GitHub machine
       - name: Checkout code  # Name of the step that will be displayed in the GitHub Actions UI
-        uses: actions/checkout@v4 # Use the checkout action to clone the repository's code onto the runner machine
+        uses: actions/checkout@v5 # Use the checkout action to clone the repository's code onto the runner machine
 
       # Step 2 - Install the Node.js version matching your local setup
       - name: Set up Node.js  # Name of the step that will be displayed in the GitHub Actions UI
