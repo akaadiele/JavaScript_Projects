@@ -18,8 +18,6 @@ const imdbLinkElement = document.querySelector("#imdbLink");
 const reviewsSection = document.querySelector("#reviews-section");
 const titleElement = document.querySelector("title");
 
-let selectedRating = 10;    // Selected rating for new reviews initialized to 10
-
 // Variables for calculating average rating
 let sumOfRating = 0;   // Variable to store the sum of all ratings for the movie, initialized to 0
 let avgRating = 0;    // Variable to store the average rating for the movie, initialized to 0
@@ -30,8 +28,19 @@ let numberOfReviews = 0;   // Variable to store the total number of reviews for 
 document.querySelector("body").style.backgroundColor = "#7C7C7C";
 
 // --------------------------------------------------------------------------------------------------------------------
+// New Reviews
+
 // Setting up the rating stars in the review form for new reviews
 setupReviewFormRatingStars("newRatingInput");
+
+// Adding event listener to the save button for new reviews to save the new review when clicked
+const saveNewReviewButton = document.querySelector("#save-new-review");
+if (saveNewReviewButton) {
+    saveNewReviewButton.addEventListener("click", function (event) {
+        event.preventDefault();
+        saveReview("newReviewInput", "newUserInput", "newRatingInput");
+    });
+}
 
 // ----------------------------------------------------------------------------------------------------
 // Movie Info
@@ -40,20 +49,25 @@ setupReviewFormRatingStars("newRatingInput");
 function fetchMovieInfo(currentMovieId) {
     const url = `${tmdbMovieApiLink}${currentMovieId}`;
     fetch(url)
-        .then(response => response.json())
+        // check http status before parsing response as JSON to handle errors properly
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Failed to fetch movie info");
+            }
+            return response.json();
+        })
         .then(function (data) {
             // Extracting relevant movie information from the response data to display on the page
             const title = data.title;
             const overview = data.overview;
-            const releaseYear = data.release_date.split("-")[0]
+            const releaseYear = data.release_date.split("-")[0];
 
             // Handling movie images
-            let imgPath = "";
-            let imgBasePath = "https://image.tmdb.org/t/p/w1280";
+            let imgPath = "https://image.tmdb.org/t/p/w1280";
             if (data.poster_path) {
-                imgPath = imgBasePath + data.poster_path; // Using the poster image if available
+                imgPath = imgPath + data.poster_path; // Using the poster image if available
             } else if (data.backdrop_path) {
-                imgPath = imgBasePath + data.backdrop_path;   // Using the backdrop image if the poster is not available
+                imgPath = imgPath + data.backdrop_path;   // Using the backdrop image if the poster is not available
             } else {
                 imgPath = "./img/default_movie.jpg";  // Default image if no poster or backdrop is available
             }
@@ -66,12 +80,15 @@ function fetchMovieInfo(currentMovieId) {
             moviePoster.src = imgPath;
             moviePoster.alt = title;
 
-            if (!data.imdb_id || data.imdb_id == null || data.imdb_id == "") {
+            if (!data.imdb_id || data.imdb_id === null || data.imdb_id === "") {
                 imdbLinkElement.innerHTML = "";
             } else {
                 const imdbLink = `https://www.imdb.com/title/${data.imdb_id}/`;
                 imdbLinkElement.href = imdbLink;
             }
+        })
+        .catch(() => {
+            alert("An error occurred while fetching movie information. Please try again later.");
         });
 }
 
@@ -84,12 +101,18 @@ fetchMovieInfo(movieId);
 // Fetching and displaying reviews for the movie
 function fetchReviews(url) {
     fetch(url)
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Failed to fetch reviews");
+            }
+            return response.json();
+        })
         .then(function (data) {
             data.reviews.forEach(review => {
-                currentReviewId = review._id;
-                currentReviewText = review.review;
-                currentReviewUser = review.user;
+                const currentReviewId = review._id;
+                const currentReviewText = sanitizeUserInput(review.review);
+                const currentReviewUser = sanitizeUserInput(review.user);
+                let currentReviewRating;
                 review.rating ? currentReviewRating = review.rating : currentReviewRating = 0;
 
                 // Values for calculating average rating
@@ -115,10 +138,10 @@ function fetchReviews(url) {
                             </p>
 
                             <p>
-                                <a href="#" class="btn btn-sm btn-info" onclick="editReview(\`${currentReviewId}\`, \`${currentReviewText}\`, \`${currentReviewUser}\`, \`${currentReviewRating}\`)" hidden>
+                                <a href="#" class="btn btn-sm btn-info" id="edit-${currentReviewId}">
                                     <i class="fa-solid fa-pencil"></i> Edit
                                 </a>
-                                <a href="#" class="btn btn-sm btn-secondary" onclick="deleteReview('${currentReviewId}')" hidden>
+                                <a href="#" class="btn btn-sm btn-secondary" id="delete-${currentReviewId}">
                                     <i class="fa-solid fa-trash-can"></i> Delete
                                 </a>
                             </p>
@@ -128,6 +151,19 @@ function fetchReviews(url) {
 
                 // Appending the created review card to the reviews section
                 reviewsSection.appendChild(divReview);
+
+                // Adding event listeners to the edit and delete buttons for each review to allow users to edit or delete their reviews
+                const editButton = document.getElementById(`edit-${currentReviewId}`);
+                editButton.addEventListener("click", function (event) {
+                    event.preventDefault();
+                    editReview(currentReviewId, currentReviewText, currentReviewUser, currentReviewRating);
+                });
+
+                const deleteButton = document.getElementById(`delete-${currentReviewId}`);
+                deleteButton.addEventListener("click", function (event) {
+                    event.preventDefault();
+                    deleteReview(currentReviewId);
+                });
 
                 // Setting up the rating stars for each review based on the current review's rating
                 setupReviewFormRatingStars(`rating-${currentReviewId}`, currentReviewRating, true);
@@ -140,7 +176,9 @@ function fetchReviews(url) {
             } else {
                 movieAverageRating.innerHTML = `Average Rating: <small class="ratingTotal fst-italic">No ratings yet</small>`;
             }
-
+        })
+        .catch(() => {
+            alert("An error occurred while fetching reviews. Please try again later.");
         });
 }
 
@@ -181,15 +219,30 @@ function editReview(reviewId, reviewText, reviewUser, reviewRating) {
             </div>
 
             
-            <a href="#" class="btn btn-success" onclick="saveReview('${reviewInputId}', '${userInputId}', '${ratingInputId}', '${reviewId}')">
+            <a href="#" class="btn btn-success" id="save-${reviewInputId}">
                 <i class="fa-regular fa-floppy-disk"> </i> Update
             </a>
 
-            <a href="#" class="btn btn-secondary" onclick="cancelEdit()">
+            <a href="#" class="btn btn-secondary" id="cancel-${reviewInputId}">
                 <i class="fa-solid fa-x"></i> Cancel
             </a>
         </div>`;
 
+    // Adding event listener to the save button in the edit review form to save the updated review when clicked
+    const saveButton = document.getElementById(`save-${reviewInputId}`);
+    saveButton.addEventListener("click", function (event) {
+        event.preventDefault();
+        saveReview(reviewInputId, userInputId, ratingInputId, reviewId);
+    });
+
+
+    // Adding event listener to the cancel button in the edit review form 
+    // to cancel the edit operation and revert back to the original review card when clicked
+    const cancelButton = document.getElementById(`cancel-${reviewInputId}`);
+    cancelButton.addEventListener("click", function (event) {
+        event.preventDefault();
+        cancelEdit();
+    });
 
     // Setting up the rating stars in the review form for editing reviews
     setupReviewFormRatingStars(ratingInputId, reviewRating);
@@ -202,7 +255,7 @@ function saveReview(reviewInputId, userInputId, ratingInputId, reviewId = null) 
     const updatedReview = document.getElementById(reviewInputId).value;
     const updatedUser = document.getElementById(userInputId).value;
     const updatedRating = document.getElementById(ratingInputId);
-    
+
     const tmdbMovieTitle = movieTitle.innerText;
 
     // Getting the updated rating value from the rating stars in the edit review form
@@ -226,9 +279,15 @@ function saveReview(reviewInputId, userInputId, ratingInputId, reviewId = null) 
                 }
             )
         })
-            .then(response => response.json())
-            .then(res => {
-                location.reload();  // Reloading the page
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to update review");
+                }
+                return response.json();
+            })
+            .then(() => window.location.reload())     // Reloading the page
+            .catch(() => {
+                alert("An error occurred while updating the review. Please try again later.");
             });
     } else {
         // Creating a new review
@@ -246,9 +305,15 @@ function saveReview(reviewInputId, userInputId, ratingInputId, reviewId = null) 
                 "movieTitle": tmdbMovieTitle
             })
         })
-            .then(response => response.json())
-            .then(res => {
-                location.reload();  // Reloading the page
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to create review");
+                }
+                return response.json();
+            })
+            .then(() => window.location.reload())     // Reloading the page
+            .catch(() => {
+                alert("An error occurred while creating the review. Please try again later.");
             });
     }
 }
@@ -260,9 +325,15 @@ function deleteReview(reviewId) {
     fetch(`${reviewsApiLink}${reviewId}`, {
         method: "DELETE"
     })
-        .then(response => response.json())
-        .then(res => {
-            location.reload();  // Reloading the page
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Failed to delete review");
+            }
+            return response.json();
+        })
+        .then(() => window.location.reload())     // Reloading the page
+        .catch(() => {
+            alert("An error occurred while deleting the review. Please try again later.");
         });
 }
 
@@ -270,7 +341,7 @@ function deleteReview(reviewId) {
 // --------------------------------------------------------------------------------------------------------------------
 // Canceling the edit operation
 function cancelEdit() {
-    location.reload();  // Reloading the page
+    window.location.reload();  // Reloading the page
 }
 
 
@@ -315,7 +386,7 @@ function setupReviewFormRatingStars(ratingElementId, initialRating = 10, isReadO
     createRatingStars(numberOfStars, ratingElement);
 
     // Selecting all the star elements within the ratingElement to add event listeners for click events
-    let allRatingStars = ratingElement.querySelectorAll(".fa-star");
+    const allRatingStars = ratingElement.querySelectorAll(".fa-star");
 
     // Updating the star elements based on the initial rating value when the form is set up
     updateRatingStars(initialRating, allRatingStars);
@@ -330,7 +401,7 @@ function setupReviewFormRatingStars(ratingElementId, initialRating = 10, isReadO
     }
 
     // Selecting all the star elements within the ratingElement to add event listeners for click events
-    let editableRatingStars = ratingElement.querySelectorAll(".edit-allowed");
+    const editableRatingStars = ratingElement.querySelectorAll(".edit-allowed");
 
     let currentRating = initialRating;   // Variable to keep track of the current selected rating value
     // Adding event listeners to each star for user interaction
@@ -341,12 +412,11 @@ function setupReviewFormRatingStars(ratingElementId, initialRating = 10, isReadO
         star.addEventListener("click", function () {
             currentRating = index + 1;
             updateRatingStars(currentRating, editableRatingStars);
-            selectedRating = currentRating;
         });
 
         // When a star is hovered over
         star.addEventListener("mouseover", function () {
-            tempRating = index + 1;
+            const tempRating = index + 1;
             updateRatingStars(tempRating, editableRatingStars);
         });
 
@@ -358,18 +428,24 @@ function setupReviewFormRatingStars(ratingElementId, initialRating = 10, isReadO
 }
 
 // ********************************************************************************************************************
-
 // --------------------------------------------------------------------------------------------------------------------
-// Clean up String
-function cleanUpString(str) {
-    // Replace quotes with escaped quotes to prevent issues when passing strings as arguments in HTML attributes (e.g., onclick handlers).
-    str = str.replace(/'/g, "\\'").replace(/"/g, '\\"');
+// Function to clean up and return user input to prevent XSS attacks 
+// by escaping special characters in user input before displaying it on the page
+function sanitizeUserInput(inputText) {
+    // clean up text and return clean text
+    const tempElement = document.createElement("div");
 
-    // Replacing multiple consecutive whitespace characters with a single space and trimming leading/trailing whitespace from the string.
-    str = str.replace(/\s+/g, ' ').trim();
+    // Using textContent to set the input text as the content of a temporary DOM element, 
+    // This automatically escapes any special characters in the input text, preventing them from being interpreted as HTML
+    tempElement.textContent = inputText;
+    const sanitizedText = tempElement.innerHTML;   // Retrieving the sanitized text from the temporary element
 
-    return str; // Returning the cleaned-up string after processing.
+    // Removing 'tempElement' from the DOM
+    tempElement.remove();
+
+    return sanitizedText;   // Returning the sanitized text
 }
+
 
 // --------------------------------------------------------------------------------------------------------------------
 

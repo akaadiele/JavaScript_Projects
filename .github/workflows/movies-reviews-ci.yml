@@ -16,8 +16,57 @@ on:
 
 # Define the jobs to be run in this workflow
 jobs:
-  test: # Define a job named 'test' to run the test suite
-    name: Run Tests   # Name of the job that will be displayed in the GitHub Actions UI
+  lint-frontend:
+    name: Lint Frontend Code  # Name of the job that will be displayed in the GitHub Actions UI
+    runs-on: ubuntu-latest  # Specify the operating system for the job (using the latest version of Ubuntu)
+
+    # Set defaults
+    defaults:
+      run:  # Set the default working directory for all run steps in this job to the frontend directory
+        working-directory: Movies_Reviews/frontend
+
+    steps:  # Define the steps to be executed in this job
+      # Step 1 - Check out your code onto the GitHub machine
+      - name: Checkout code  # Name of the step that will be displayed in the GitHub Actions UI
+        uses: actions/checkout@v4 # Use the checkout action to clone the repository's code onto the runner machine
+
+      # Step 2 - Install the Node.js version matching your local setup
+      - name: Set up Node.js  # Name of the step that will be displayed in the GitHub Actions UI
+        uses: actions/setup-node@v4  # Use the setup-node action to set up the Node.js environment on the runner machine
+        with:
+          node-version: 24  # Specify the version of Node.js to be installed (matching the version used in local development)
+          cache: "npm"  # Enable caching for npm dependencies to speed up subsequent runs of the workflow
+          cache-dependency-path: Movies_Reviews/frontend/package-lock.json # Specify the path to the package-lock.json file for caching npm dependencies
+
+      # Step 3 - Install dependencies
+      - name: Install dependencies  # Name of the step that will be displayed in the GitHub Actions UI
+        run: npm ci # Run the command to install the dependencies defined in the package.json file using npm ci for a clean install
+        # npm ci is used instead of npm install in CI environments to ensure a clean and consistent installation of dependencies based on the package-lock.json file, 
+        # which can help prevent issues caused by changes in the dependency tree.
+        # The 'run' command will execute the 'npm ci' command in the 'Movies_Reviews/frontend' directory, as set by the defaults at the job level.
+
+      # Step 4 - Run ESLint to lint frontend code
+      - name: Run ESLint  # Name of the step that will be displayed in the GitHub Actions UI
+        run: npx eslint . # Run the command to execute ESLint on the frontend codebase, which will check for linting issues based on the configuration defined in eslint.config.js
+        # The 'run' command will execute the 'npx eslint .' command in the 'Movies_Reviews/frontend' directory, as set by the defaults at the job level. If any linting issues are found that violate the rules defined in eslint.config.js, this step will fail and prevent the workflow from proceeding to the next job.
+        
+        # run: npm run lint # Run the command to execute the lint script defined in the package.json file, which should be configured to run ESLint with the appropriate configuration (e.g., "eslint .")
+        
+        # Difference between 'npx eslint .' and 'npm run lint':
+        # - 'npx eslint .': This command directly runs ESLint on the current directory (and its subdirectories) using npx, 
+        #   which will look for the eslint package in the node_modules directory and execute it with the specified arguments. 
+        #   This is a quick way to run ESLint without needing to define a script in package.json.
+        # - 'npm run lint': This command runs a custom script defined in the package.json file under the "scripts" section. 
+        #   For example, if you have a script defined as "lint": "eslint .", then running 'npm run lint' will execute that command. 
+        #   This approach allows you to centralize your commands in the package.json file and makes it easier to manage and update your scripts in one place.
+        
+
+# --------------
+
+  test-backend: # Define a job named 'test' to run the test suite
+    name: Run Backend Tests   # Name of the job that will be displayed in the GitHub Actions UI
+    needs: lint-frontend  # This job will only run after the 'lint-frontend' job has completed successfully, ensuring that linting issues are resolved before running tests
+      # 'needs' creates a dependency between jobs, so if the 'lint-frontend' job fails (e.g., due to linting errors), the 'test-backend' job will be skipped and not executed, preventing the workflow from proceeding with tests when there are known issues in the codebase that need to be addressed first.
     runs-on: ubuntu-latest  # Specify the operating system for the job (using the latest version of Ubuntu)
 
     # Set defaults

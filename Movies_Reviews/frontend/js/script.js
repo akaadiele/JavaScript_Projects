@@ -3,7 +3,6 @@
 const tmdbApiLink = `https://movie-review-api-o8bs.onrender.com/api/v1/tmdb`;  // Base URL for the backend API
 
 const discoverApi = `${tmdbApiLink}/discover`;  // API URL for fetching popular movies from TMDB
-const imgBasePath = 'https://image.tmdb.org/t/p/w1280'; // API URL for fetching movie images from TMDB
 const searchApi = `${tmdbApiLink}/search/`;  // API URL for searching movies on TMDB
 
 const movieSection = document.querySelector("#movie-section");
@@ -36,23 +35,37 @@ function fetchMovies(url) {
     // Show the loading screen before starting the fetch operation to indicate that data is being loaded.
     showLoadingScreen();
 
-    fetch(url)
-        .then(response => response.json())
-        .then(function (data) {
-            data.results.forEach(element => {
-                // Hide the loading screen after the movies have been fetched to display the movie cards.
-                hideLoadingScreen();
+    // Encode url passed
+    url = encodeURI(url);
 
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Failed to fetch movies");
+            }
+            return response.json();
+        })
+        .then(function (data) {
+            if (!data.results || data.results.length === 0) {
+                hideLoadingScreen();
+                alert("No movies found.");
+                return;
+            }
+
+            // Hide the loading screen after the movies have been fetched to display the movie cards.
+            hideLoadingScreen();
+
+            data.results.forEach(element => {
                 // Div element for each movie card
                 const divCol = document.createElement("div");
                 divCol.classList.add("col", "d-flex", "justify-content-center");
 
                 // Handling movie images
-                let imgPath = "";
+                let imgPath = 'https://image.tmdb.org/t/p/w1280'; // API URL for fetching movie images from TMDB
                 if (element.poster_path) {
-                    imgPath = imgBasePath + element.poster_path; // Using the poster image if available
+                    imgPath = imgPath + element.poster_path; // Using the poster image if available
                 } else if (element.backdrop_path) {
-                    imgPath = imgBasePath + element.backdrop_path;   // Using the backdrop image if the poster is not available
+                    imgPath = imgPath + element.backdrop_path;   // Using the backdrop image if the poster is not available
                 } else {
                     imgPath = "./img/default_movie.jpg";  // Default image if no poster or backdrop is available
                 }
@@ -73,6 +86,10 @@ function fetchMovies(url) {
 
             // Adding animation to the movie section after the movies have been loaded
             movieSection.classList.add("animate__animated", "animate__fadeIn");
+        })
+        .catch(() => {
+            hideLoadingScreen();
+            alert("An error occurred while fetching movies. Please try again later.");
         });
 }
 
@@ -90,7 +107,7 @@ searchForm.addEventListener("submit", (evt) => {
     const searchText = searchQuery.value;
     if (searchText) {
         // Search using user's input
-        fetchMovies(searchApi + searchText);
+        fetchMovies(searchApi + encodeURIComponent(searchText));
     } else {
         // No user input, fetch popular movies
         fetchMovies(discoverApi);
