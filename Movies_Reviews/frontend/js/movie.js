@@ -79,12 +79,14 @@ function fetchMovieInfo(currentMovieId) {
             movieReleaseYear.innerText = `Released: ${releaseYear}`;
             moviePoster.src = imgPath;
             moviePoster.alt = title;
+            moviePoster.hidden = false;
 
             if (!data.imdb_id || data.imdb_id === null || data.imdb_id === "") {
                 imdbLinkElement.innerHTML = "";
             } else {
                 const imdbLink = `https://www.imdb.com/title/${data.imdb_id}/`;
                 imdbLinkElement.href = imdbLink;
+                imdbLinkElement.hidden = false;
             }
         })
         .catch(() => {

@@ -1,6 +1,12 @@
+# ------------------------------------------------------------------------------------
 # GitHub Actions Workflow for Movies & Reviews CI Pipeline
+# ------------------------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------------------------
 name: Movies & Reviews CI Pipeline
 
+# ------------------------------------------------------------------------------------
 # Opt into the newer JavaScript actions runtime before GitHub flips the default.
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -8,118 +14,163 @@ env:
 # Trigger the workflow on push or pull request events to the main branch and when changes are made to the Movies_Reviews directory or the workflow file itself
 on:
   push:
-    branches: [main]  # Trigger the workflow when code is pushed to the main branch
-    paths:  # Trigger the workflow when changes are made to any files in the Movies_Reviews directory or the workflow file itself
-      - Movies_Reviews/**   # Trigger on changes to any files in the Movies_Reviews directory
+    branches: [ main ] # Trigger the workflow when code is pushed to the main branch
+    paths:
+      # Trigger the workflow when changes are made to any files in the Movies_Reviews directory or the workflow file itself
+      - Movies_Reviews/** # Trigger on changes to any files in the Movies_Reviews directory
       - .github/workflows/movies-reviews-ci.yml
   pull_request:
-    branches: [main]  # Trigger the workflow when a pull request is opened against the main branch
-    paths:  # Trigger the workflow when changes are made to any files in the Movies_Reviews directory or the workflow file itself
-      - Movies_Reviews/**  # Trigger on changes to any files in the Movies_Reviews directory
+    branches: [ main ] # Trigger the workflow when a pull request is opened against the main branch
+    paths:
+      # Trigger the workflow when changes are made to any files in the Movies_Reviews directory or the workflow file itself
+      - Movies_Reviews/** # Trigger on changes to any files in the Movies_Reviews directory
       - .github/workflows/movies-reviews-ci.yml # Trigger on changes to this particular workflow file itself, ensuring that updates to the CI configuration also trigger the workflow
 
+# ------------------------------------------------------------------------------------
 # Define the jobs to be run in this workflow
 jobs:
   lint-frontend:
-    name: Lint Frontend Code  # Name of the job that will be displayed in the GitHub Actions UI
-    runs-on: ubuntu-latest  # Specify the operating system for the job (using the latest version of Ubuntu)
+    name: Lint Frontend Code # Name of the job that will be displayed in the GitHub Actions UI
+    runs-on: ubuntu-latest # Specify the operating system for the job (using the latest version of Ubuntu)
 
     # Set defaults
     defaults:
-      run:  # Set the default working directory for all run steps in this job to the frontend directory
+      run:
+        # Set the default working directory for all run steps in this job to the frontend directory
         working-directory: Movies_Reviews/frontend
 
-    steps:  # Define the steps to be executed in this job
+    steps:
+      # Define the steps to be executed in this job
       # Step 1 - Check out your code onto the GitHub machine
-      - name: Checkout code  # Name of the step that will be displayed in the GitHub Actions UI
+      - name: Checkout code # Name of the step that will be displayed in the GitHub Actions UI
         uses: actions/checkout@v6 # Use the checkout action to clone the repository's code onto the runner machine
 
       # Step 2 - Install the Node.js version matching your local setup
-      - name: Set up Node.js  # Name of the step that will be displayed in the GitHub Actions UI
-        uses: actions/setup-node@v6  # Use the setup-node action to set up the Node.js environment on the runner machine
+      - name: Set up Node.js # Name of the step that will be displayed in the GitHub Actions UI
+        uses: actions/setup-node@v6 # Use the setup-node action to set up the Node.js environment on the runner machine
         with:
-          node-version: 24  # Specify the version of Node.js to be installed (matching the version used in local development)
-          cache: "npm"  # Enable caching for npm dependencies to speed up subsequent runs of the workflow
+          node-version: 24 # Specify the version of Node.js to be installed (matching the version used in local development)
+          cache: "npm" # Enable caching for npm dependencies to speed up subsequent runs of the workflow
           cache-dependency-path: Movies_Reviews/frontend/package-lock.json # Specify the path to the package-lock.json file for caching npm dependencies
 
       # Step 3 - Install dependencies
-      - name: Install dependencies  # Name of the step that will be displayed in the GitHub Actions UI
+      - name: Install dependencies # Name of the step that will be displayed in the GitHub Actions UI
         run: npm ci # Run the command to install the dependencies defined in the package.json file using npm ci for a clean install
-        # npm ci is used instead of npm install in CI environments to ensure a clean and consistent installation of dependencies based on the package-lock.json file, 
-        # which can help prevent issues caused by changes in the dependency tree.
-        # The 'run' command will execute the 'npm ci' command in the 'Movies_Reviews/frontend' directory, as set by the defaults at the job level.
 
       # Step 4 - Run ESLint to lint frontend code
-      - name: Run ESLint  # Name of the step that will be displayed in the GitHub Actions UI
+      - name: Run ESLint # Name of the step that will be displayed in the GitHub Actions UI
         run: npx eslint . # Run the command to execute ESLint on the frontend codebase, which will check for linting issues based on the configuration defined in eslint.config.js
-        # The 'run' command will execute the 'npx eslint .' command in the 'Movies_Reviews/frontend' directory, as set by the defaults at the job level. If any linting issues are found that violate the rules defined in eslint.config.js, this step will fail and prevent the workflow from proceeding to the next job.
-        
-        # run: npm run lint # Run the command to execute the lint script defined in the package.json file, which should be configured to run ESLint with the appropriate configuration (e.g., "eslint .")
-        
-        # Difference between 'npx eslint .' and 'npm run lint':
-        # - 'npx eslint .': This command directly runs ESLint on the current directory (and its subdirectories) using npx, 
-        #   which will look for the eslint package in the node_modules directory and execute it with the specified arguments. 
-        #   This is a quick way to run ESLint without needing to define a script in package.json.
-        # - 'npm run lint': This command runs a custom script defined in the package.json file under the "scripts" section. 
-        #   For example, if you have a script defined as "lint": "eslint .", then running 'npm run lint' will execute that command. 
-        #   This approach allows you to centralize your commands in the package.json file and makes it easier to manage and update your scripts in one place.
-        
 
-# --------------
-
-  test-backend: # Define a job named 'test' to run the test suite
-    name: Run Backend Tests   # Name of the job that will be displayed in the GitHub Actions UI
-    needs: lint-frontend  # This job will only run after the 'lint-frontend' job has completed successfully, ensuring that linting issues are resolved before running tests
+  # ------------------------------------------------------------------------------------
+  test-backend:
+    # Define a job named 'test' to run the test suite
+    name: Run Backend Tests # Name of the job that will be displayed in the GitHub Actions UI
+    needs: lint-frontend
+      # This job will only run after the 'lint-frontend' job has completed successfully, ensuring that linting issues are resolved before running tests
       # 'needs' creates a dependency between jobs, so if the 'lint-frontend' job fails (e.g., due to linting errors), the 'test-backend' job will be skipped and not executed, preventing the workflow from proceeding with tests when there are known issues in the codebase that need to be addressed first.
-    runs-on: ubuntu-latest  # Specify the operating system for the job (using the latest version of Ubuntu)
+    runs-on: ubuntu-latest # Specify the operating system for the job (using the latest version of Ubuntu)
 
     # Set defaults
     defaults:
-      run:  # Set the default working directory for all run steps in this job to the backend directory
+      run:
+        # Set the default working directory for all run steps in this job to the backend directory
         working-directory: Movies_Reviews/backend
 
-    steps:  # Define the steps to be executed in this job
+    steps:
+      # Define the steps to be executed in this job
       # Step 1 - Check out your code onto the GitHub machine
-      - name: Checkout code  # Name of the step that will be displayed in the GitHub Actions UI
+      - name: Checkout code # Name of the step that will be displayed in the GitHub Actions UI
         uses: actions/checkout@v6 # Use the checkout action to clone the repository's code onto the runner machine
 
       # Step 2 - Install the Node.js version matching your local setup
-      - name: Set up Node.js  # Name of the step that will be displayed in the GitHub Actions UI
-        uses: actions/setup-node@v6  # Use the setup-node action to set up the Node.js environment on the runner machine
+      - name: Set up Node.js # Name of the step that will be displayed in the GitHub Actions UI
+        uses: actions/setup-node@v6 # Use the setup-node action to set up the Node.js environment on the runner machine
         with:
-          node-version: 24  # Specify the version of Node.js to be installed (matching the version used in local development)
-          cache: "npm"  # Enable caching for npm dependencies to speed up subsequent runs of the workflow
+          node-version: 24 # Specify the version of Node.js to be installed (matching the version used in local development)
+          cache: "npm" # Enable caching for npm dependencies to speed up subsequent runs of the workflow
           cache-dependency-path: Movies_Reviews/backend/package-lock.json # Specify the path to the package-lock.json file for caching npm dependencies
 
       # Step 3 - Install dependencies
-      - name: Install dependencies  # Name of the step that will be displayed in the GitHub Actions UI
+      - name: Install dependencies # Name of the step that will be displayed in the GitHub Actions UI
         run: npm ci # Run the command to install the dependencies defined in the package.json file using npm ci for a clean install
         # npm ci is used instead of npm install in CI environments to ensure a clean and consistent installation of dependencies based on the package-lock.json file, 
         # which can help prevent issues caused by changes in the dependency tree.
         # The 'run' command will execute the 'npm ci' command in the 'Movies_Reviews/backend' directory, as set by the defaults at the job level.
 
-      # Step 4 - Run test suite
-      - name: Run tests  # Name of the step that will be displayed in the GitHub Actions UI
-        env:  # Define environment variables needed for the tests, using secrets stored in GitHub for security
+        # Step 4 - Run test suite
+      - name: Run tests # Name of the step that will be displayed in the GitHub Actions UI
+        env:
+          # Define environment variables needed for the tests, using secrets stored in GitHub for security
           PORT: ${{ secrets.PORT }}
           MONGODB_U: ${{ secrets.MONGODB_U }}
           MONGODB_P: ${{ secrets.MONGODB_P }}
           TMDB_K: ${{ secrets.TMDB_K }}
         run: npm test # Run the command to execute the test suite defined in the package.json file (e.g., using Jest or another testing framework)
         # The 'run' command will execute the 'npm test' command in the 'Movies_Reviews/backend' directory, as set by the defaults at the job level.
-      
-      # # Step 5 - Deploy to Render (only runs if tests pass)
-      # # This step is currently commented out, but it can be enabled to deploy the application to Render if all tests pass successfully.
-      # - name: Deploy to Render  # Name of the step that will be displayed in the GitHub Actions UI
-      #   if: success()  # This step will only run if all previous steps in the job have succeeded (i.e., if the tests pass)
-      #   uses: render-examples/deploy-to-render@v1.0.0  # Use a custom action to deploy the application to Render
-      #   with:
-      #     api_key: ${{ secrets.RENDER_API_KEY }}  # Pass the Render API key as an input to the action, using a secret stored in GitHub for security
-      #     service_id: ${{ secrets.RENDER_SERVICE_ID }}  # Pass the Render service ID as an input to the action, using a secret stored in GitHub for security
-      # 
-      # # Alternatively, if you prefer to trigger a deployment using a Render deploy hook, you can use the following step instead:
-      # - name: Deploy to Render  # Name of the step that will be displayed in the GitHub Actions UI
-      #   env:  # Define environment variables needed for the deployment, using secrets stored in GitHub for security
-      #     RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }} # The Render deploy hook URL, which can be used to trigger a deployment on Render by making a POST request to this URL
-      #   run: curl -X POST $RENDER_DEPLOY_HOOK # Use the curl command to make a POST request to the Render deploy hook URL, which will trigger a deployment on Render if the tests pass
-        
+
+        # # Step 5 - Deploy to Render (only runs if tests pass)
+        # # This step is currently commented out, but it can be enabled to deploy the application to Render if all tests pass successfully.
+        # - name: Deploy to Render  # Name of the step that will be displayed in the GitHub Actions UI
+        #   if: success()  # This step will only run if all previous steps in the job have succeeded (i.e., if the tests pass)
+        #   uses: render-examples/deploy-to-render@v1.0.0  # Use a custom action to deploy the application to Render
+        #   with:
+        #     api_key: ${{ secrets.RENDER_API_KEY }}  # Pass the Render API key as an input to the action, using a secret stored in GitHub for security
+        #     service_id: ${{ secrets.RENDER_SERVICE_ID }}  # Pass the Render service ID as an input to the action, using a secret stored in GitHub for security
+        #
+        # # Alternatively, if you prefer to trigger a deployment using a Render deploy hook, you can use the following step instead:
+        # - name: Deploy to Render  # Name of the step that will be displayed in the GitHub Actions UI
+        #   env:  # Define environment variables needed for the deployment, using secrets stored in GitHub for security
+        #     RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }} # The Render deploy hook URL, which can be used to trigger a deployment on Render by making a POST request to this URL
+        #   run: curl -X POST $RENDER_DEPLOY_HOOK # Use the curl command to make a POST request to the Render deploy hook URL, which will trigger a deployment on Render if the tests pass
+
+  # ------------------------------------------------------------------------------------
+  test-e2e:
+    name: Run Playwright E2E Tests
+    needs: test-backend # only runs if backend tests pass
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: Movies_Reviews/frontend
+
+    steps:
+      # Step 1 - Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      # Step 2 - Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: "npm"
+          cache-dependency-path: Movies_Reviews/frontend/package-lock.json
+
+      # Step 3 - Install dependencies
+      - name: Install dependencies
+        run: npm ci
+
+      # Step 4 - Install Playwright browsers
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+        # --with-deps installs system dependencies required by the browser
+        # We only install chromium to keep the pipeline fast and lightweight
+
+        # Step 5 - Run Playwright tests
+      - name: Run Playwright E2E tests
+        run: npm run test:e2e
+
+      # Step 6 - Upload screenshots on failure (very useful for debugging)
+      - name: Upload test results on failure
+        if: failure() # only runs if the previous step failed
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-screenshots
+          path: Movies_Reviews/frontend/tests/test-results/
+          retention-days: 7 # keep screenshots for 7 days then auto-delete
+  # ------------------------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------
+
