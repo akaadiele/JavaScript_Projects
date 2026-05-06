@@ -34,3 +34,4 @@ Thumbs.db
 # Other directories/files to ignore
 zbackups/
 frontend/test-results/
+frontend/tests/test-results/

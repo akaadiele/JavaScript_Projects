@@ -94,6 +94,7 @@ function fetchMovieInfo(currentMovieId) {
         });
 }
 
+// Fetching and displaying the movie information for the current movie
 fetchMovieInfo(movieId);
 
 
@@ -140,10 +141,10 @@ function fetchReviews(url) {
                             </p>
 
                             <p>
-                                <a href="#" class="btn btn-sm btn-info" id="edit-${currentReviewId}">
+                                <a href="#" class="btn btn-sm btn-info" id="edit-${currentReviewId}" hidden>
                                     <i class="fa-solid fa-pencil"></i> Edit
                                 </a>
-                                <a href="#" class="btn btn-sm btn-secondary" id="delete-${currentReviewId}">
+                                <a href="#" class="btn btn-sm btn-secondary" id="delete-${currentReviewId}" hidden>
                                     <i class="fa-solid fa-trash-can"></i> Delete
                                 </a>
                             </p>
@@ -348,8 +349,6 @@ function cancelEdit() {
 
 
 // --------------------------------------------------------------------------------------------------------------------
-
-// ********************************************************************************************************************
 // Handling Star Ratings
 
 // Functions
@@ -429,7 +428,6 @@ function setupReviewFormRatingStars(ratingElementId, initialRating = 10, isReadO
     });
 }
 
-// ********************************************************************************************************************
 // --------------------------------------------------------------------------------------------------------------------
 // Function to clean up and return user input to prevent XSS attacks 
 // by escaping special characters in user input before displaying it on the page
@@ -448,6 +446,4 @@ function sanitizeUserInput(inputText) {
     return sanitizedText;   // Returning the sanitized text
 }
 
-
 // --------------------------------------------------------------------------------------------------------------------
-

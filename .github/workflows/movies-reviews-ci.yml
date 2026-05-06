@@ -30,7 +30,7 @@ on:
 # Define the jobs to be run in this workflow
 jobs:
   lint-frontend:
-    name: Lint Frontend Code # Name of the job that will be displayed in the GitHub Actions UI
+    name: Frontend - Lint Code # Name of the job that will be displayed in the GitHub Actions UI
     runs-on: ubuntu-latest # Specify the operating system for the job (using the latest version of Ubuntu)
 
     # Set defaults
@@ -64,7 +64,7 @@ jobs:
   # ------------------------------------------------------------------------------------
   test-backend:
     # Define a job named 'test' to run the test suite
-    name: Run Backend Tests # Name of the job that will be displayed in the GitHub Actions UI
+    name: Backend - Run Tests # Name of the job that will be displayed in the GitHub Actions UI
     needs: lint-frontend
       # This job will only run after the 'lint-frontend' job has completed successfully, ensuring that linting issues are resolved before running tests
       # 'needs' creates a dependency between jobs, so if the 'lint-frontend' job fails (e.g., due to linting errors), the 'test-backend' job will be skipped and not executed, preventing the workflow from proceeding with tests when there are known issues in the codebase that need to be addressed first.
@@ -125,7 +125,7 @@ jobs:
 
   # ------------------------------------------------------------------------------------
   test-e2e:
-    name: Run Playwright E2E Tests
+    name: Frontend - Run E2E Tests
     needs: test-backend # only runs if backend tests pass
     runs-on: ubuntu-latest
 
